@@ -23,6 +23,15 @@ public class Level {
         return levelNo;
     }
 
+    public String getPath() {
+        return "src/level" + levelNo + ".txt";
+    }
+
+
+    public void setLevelNo(int levelNo) {
+        this.levelNo = levelNo;
+    }
+
     //private Tile draggingTile;
     //private Tile nextTile;
     //private Tile starterTile;

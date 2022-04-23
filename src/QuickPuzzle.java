@@ -6,7 +6,8 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
-import org.w3c.dom.Text;
+
+import java.io.FileNotFoundException;
 
 
 public class QuickPuzzle extends Application {
@@ -17,9 +18,10 @@ public class QuickPuzzle extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        Level level1 = new Level(2);
+        Level level1 = new Level(1);
         //  level1.start(primaryStage);
-        Board board = new Board(level1);
+        Board board = new Board();
+        BoardMaker boardMaker = new BoardMaker(board);
         GridPane gridPane = board.getPane();
         //BorderPane borderPane = new BorderPane();
         VBox starterMenu = new VBox();
@@ -37,7 +39,7 @@ public class QuickPuzzle extends Application {
         primaryStage.setScene(scene);
         primaryStage.show();
 
-        playButton.setOnMouseClicked(event -> startgame(gridPane));
+        playButton.setOnMouseClicked(event -> startgame(gridPane, boardMaker));
         InfoButton.setOnMouseClicked(event -> openınfotext());
         ExitButton.setOnMouseClicked(event -> exitgame(primaryStage));
 
@@ -46,9 +48,6 @@ public class QuickPuzzle extends Application {
 
     private void openınfotext() {
         Stage stage = new Stage();
-
-
-
     }
 
     private void exitgame(Stage primaryStage) {
@@ -56,13 +55,20 @@ public class QuickPuzzle extends Application {
 
     }
 
-    private void startgame(GridPane gridPane) {
+    private void startgame(GridPane gridPane, BoardMaker boardMaker) {
+        createBoard(boardMaker);
         Stage stage = new Stage();
         Scene scene = new Scene(gridPane);
         stage.setScene(scene);
         stage.show();
+    }
 
-
+    private void createBoard(BoardMaker boardMaker) {
+        try {
+            boardMaker.createBoard();
+        } catch (FileNotFoundException e) {
+            System.out.println("Level file is not found in FileReader class setFileAndScanner method");
+        }
     }
 
 

@@ -6,39 +6,14 @@ import java.io.FileNotFoundException;
 
 public class Board {
     private GridPane pane;
-    private Filereader filereader;
-    private boardMaker boardMaker;
+    private Tile[][] surface;
 
-
-    public Filereader getFilereader() {
-        return filereader;
-    }
-
-    public boardMaker getBoardMaker() {
-        return boardMaker;
-    }
-
-    public Board(Level level) throws FileNotFoundException {
-        filereader = new Filereader(level);
-        filereader.readFile();
-        boardMaker = new boardMaker();
+    public Board() {
         pane = new GridPane();
-        createBoard();
-
-
+        surface = new Tile[4][4];
     }
 
-    public void createBoard() {
-        while (filereader.hasNextline()) {
-            Tile newtile = boardMaker.createTiles(filereader.getNextline());
-            boardMaker.arrangetiles(newtile);
-            ImageView imageView = boardMaker.getImages(newtile);
-            addImages(imageView, newtile);
-
-        }
-    }
-
-    private void addImages(ImageView imageView, Tile newtile) {
+    public void addImages(ImageView imageView, Tile newtile) {
         int row = newtile.getRow(newtile.getTileId());
         int colomn = newtile.getColumn(newtile.getTileId());
         pane.add(imageView, colomn, row);
@@ -48,5 +23,12 @@ public class Board {
 
     public GridPane getPane() {
         return pane;
+    }
+
+    public void placeTile(Tile tile) {
+        int row, colomn;
+        row = tile.getRow(tile.getTileId());
+        colomn = tile.getColumn(tile.getTileId());
+        surface[row][colomn] = tile;
     }
 }

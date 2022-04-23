@@ -3,65 +3,45 @@ import javafx.scene.image.ImageView;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.Scanner;
 
-public class Filereader {
-    private final File file;
-    private Scanner scanner;
+public class BoardMaker {
+    private Board board;
+    private FileReader fileReader;
+    private Level currentLevel;
+    private int currentLevelNo;
 
-
-    public Filereader(File file) {
-        this.file = file;
+    public BoardMaker(Board board) {
+        this.board = board;
+        this.fileReader = new FileReader();
+        initializeLevel();
     }
 
-    public Filereader(Level level) {
-        file = new File(getPath(level));
-
+    private void initializeLevel() {
+        currentLevelNo = 0;
+        currentLevel = new Level(currentLevelNo);
     }
 
-
-    public void readFile() throws FileNotFoundException {
-        scanner = new Scanner(file);
-    }
-
-    public void readFile(File file) throws FileNotFoundException {
-        scanner = new Scanner(file);
-    }
-
-    public String getNextline() {
-        if (scanner != null && scanner.hasNextLine()) {
-            return scanner.nextLine();
+    public void createBoard() throws FileNotFoundException {
+        incrementLevel();
+        Tile newTile;
+        ImageView imageView;
+        // Exception burada handle edilebilir
+        fileReader.setFileAndScanner(new File(currentLevel.getPath()));
+        while (fileReader.hasNextLine()) {
+            newTile = createTiles(fileReader.getNextLine());
+            board.placeTile(newTile);
+            imageView = getImages(newTile);
+            board.addImages(imageView, newTile);
         }
-        return null;
-
     }
 
-    public boolean hasNextline() {
-        return scanner.hasNextLine();
+    private void incrementLevel() {
+        currentLevelNo++;
+        currentLevel.setLevelNo(currentLevelNo);
     }
 
-    public String getPath(Level level) {
-        return "src/level" + level.getLevelNo()+ ".txt";
-    }
-}
-
-class boardMaker {
-    Tile[][] board;
-    ArrayList<Tile> tiles = new ArrayList<>();
-
-    public Tile[][] getBoard() {
-        return board;
-    }
-
-    public boardMaker() {
-        board = new Tile[4][4];
-
-    }
-
-
-    public Tile createTiles(String inputline) {
-        String[] linesplit = inputline.split(",");
+    private Tile createTiles(String inputLine) {
+        String[] linesplit = inputLine.split(",");
         int id = Integer.parseInt(linesplit[0]);
         String type = linesplit[1];
         String property = linesplit[2];
@@ -98,9 +78,7 @@ class boardMaker {
         return null;
     }
 
-
-    public ImageView getImages(Tile tile) {
-        ImageView newimageview = null;
+    private ImageView getImages(Tile tile) {
         String type = tile.getType();
         String property = tile.getProperty();
         Image image = null;
@@ -184,26 +162,8 @@ class boardMaker {
 
 
                 }
-
-
         }
         return null;
-
-
     }
 
-    public void addTiles(Tile tile) {
-        tiles.add(tile);
-
-    }
-
-
-    public void arrangetiles(Tile t) {
-        int row, colomn;
-        row = t.getRow(t.getTileId());
-        colomn = t.getColumn(t.getTileId());
-        board[row][colomn] = t;
-
-
-    }
 }
