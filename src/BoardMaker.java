@@ -29,10 +29,15 @@ public class BoardMaker {
         fileReader.setFileAndScanner(new File(currentLevel.getPath()));
         while (fileReader.hasNextLine()) {
             newTile = createTiles(fileReader.getNextLine());
-            board.placeTile(newTile);
             imageView = getImages(newTile);
-            board.addImages(imageView, newTile);
+            // TODO: imageView'ı tile içerisine koy
+            board.addImages(imageView, newTile); // TODO: Bunu kaldır
+            newTile.setOnMouseClicked(mouseEvent -> System.out.println("clicked"));
+            board.placeTile(newTile);
+            // TODO: Burada tek tek event handling yapabilirsin -> setOnSwipeEvent(newTile);
         }
+        //        setOnSwipeEvents(); // TODO: Ya bu şekilde ya da tek tek yukarıda olduğu gibi event handling yap
+        // TODO: board'daki tile'lerin hepsini burada pane'ye ekle board.appendTilesToPane()
     }
 
     private void incrementLevel() {
@@ -164,6 +169,218 @@ public class BoardMaker {
                 }
         }
         return null;
+    }
+
+    private void setOnSwipeEvents() {
+        Tile[][] boardSurface = board.getSurface();
+        Tile tile;
+        for (int i = 0; i < boardSurface.length; i++) {
+            for (int j = 0; j < boardSurface[i].length; j++) {
+                tile = boardSurface[i][j];
+//                if (tile.isMovable())
+//                    setOnSwipeEvent(tile);
+//                tile.setOnMouseClicked(mouseEvent -> System.out.println(mouseEvent.getSceneX()));
+            }
+        }
+    }
+
+    public void setOnSwipeEvent(Tile tile) {
+        int group = getGroup(tile);
+        switch (group) {
+            case 1:
+                setEventsForGroup1(tile);
+                break;
+            case 2:
+                setEventsForGroup2(tile);
+                break;
+            case 3:
+                setEventsForGroup3(tile);
+                break;
+            case 4:
+                setEventsForGroup4(tile);
+                break;
+            case 5:
+                setEventsForGroup5(tile);
+                break;
+            case 6:
+                setEventsForGroup6(tile);
+                break;
+            case 7:
+                setEventsForGroup7(tile);
+                break;
+            case 8:
+                setEventsForGroup8(tile);
+                break;
+            case 9:
+                setEventsForGroup9(tile);
+                break;
+
+        }
+    }
+
+    private void setEventsForGroup9(Tile tile) {
+        setOnSwipeLeftEvent(tile);
+        setOnSwipeRightEvent(tile);
+        setOnSwipeUpEvent(tile);
+        setOnSwipeDownEvent(tile);
+    }
+
+    private void setEventsForGroup8(Tile tile) {
+        setOnSwipeLeftEvent(tile);
+        setOnSwipeRightEvent(tile);
+        setOnSwipeUpEvent(tile);
+    }
+
+    private void setEventsForGroup7(Tile tile) {
+        setOnSwipeLeftEvent(tile);
+        setOnSwipeUpEvent(tile);
+        setOnSwipeDownEvent(tile);
+    }
+
+    private void setEventsForGroup6(Tile tile) {
+        setOnSwipeRightEvent(tile);
+        setOnSwipeUpEvent(tile);
+        setOnSwipeDownEvent(tile);
+    }
+
+    private void setEventsForGroup5(Tile tile) {
+        setOnSwipeLeftEvent(tile);
+        setOnSwipeRightEvent(tile);
+        setOnSwipeDownEvent(tile);
+    }
+
+    private void setEventsForGroup4(Tile tile) {
+        setOnSwipeLeftEvent(tile);
+        setOnSwipeUpEvent(tile);
+    }
+
+    private void setEventsForGroup3(Tile tile) {
+        setOnSwipeRightEvent(tile);
+        setOnSwipeUpEvent(tile);
+    }
+
+    private void setEventsForGroup2(Tile tile) {
+        setOnSwipeDownEvent(tile);
+        setOnSwipeLeftEvent(tile);
+    }
+
+    private void setEventsForGroup1(Tile tile) {
+        setOnSwipeDownEvent(tile);
+        setOnSwipeRightEvent(tile);
+    }
+
+    private int getGroup(Tile tile) {
+        int row = tile.getRow(tile.getTileId());
+        int col = tile.getColumn(tile.getTileId());
+        String rowCol = "" + row + col;
+        int group;
+        switch (rowCol) {
+            case "00":
+                group = 1;
+                break;
+            case "03":
+                group = 2;
+                break;
+            case "30":
+                group = 3;
+                break;
+            case "33":
+                group = 4;
+                break;
+            case "01":
+            case "02":
+                group = 5;
+                break;
+            case "10":
+            case "20":
+                group = 6;
+                break;
+            case "13":
+            case "23":
+                group = 7;
+                break;
+            case "31":
+            case "32":
+                group = 8;
+                break;
+            default:
+                group = 9;
+                break;
+        }
+
+        return group;
+    }
+
+    private void setOnSwipeLeftEvent(Tile tile) {
+        int row = tile.getRow(tile.getTileId());
+        int col = tile.getColumn(tile.getTileId());
+        Tile leftTile = board.getSurface()[row][col - 1];
+        if (isSwipeValid(tile, leftTile)) {
+            tile.setOnSwipeLeft(handler -> {
+                swapTilesHorizontally(tile, leftTile);
+                System.out.println("setOnSwipeLeftEvent clicked");
+                // TODO: değişim sonrası group değişebileceğinden dolayı event'lerin yeniden atanması gerekiyor.
+            });
+        }
+    }
+
+
+    private void setOnSwipeRightEvent(Tile tile) {
+        int row = tile.getRow(tile.getTileId());
+        int col = tile.getColumn(tile.getTileId());
+        Tile rightTile = board.getSurface()[row][col + 1];
+        if (isSwipeValid(tile, rightTile)) {
+            tile.setOnMouseClicked(handler -> {
+                swapTilesHorizontally(tile, rightTile);
+                System.out.println("setOnSwipeRightEvent clicked");
+            });
+        }
+    }
+
+    private void setOnSwipeUpEvent(Tile tile) {
+        int row = tile.getRow(tile.getTileId());
+        int col = tile.getColumn(tile.getTileId());
+        Tile upTile = board.getSurface()[row - 1][col];
+        if (isSwipeValid(tile, upTile)) {
+            tile.setOnSwipeUp(handler -> {
+                swapTilesVertically(tile, upTile);
+                System.out.println("setOnSwipeUpEvent clicked");
+            });
+        }
+    }
+
+    private void setOnSwipeDownEvent(Tile tile) {
+        int row = tile.getRow(tile.getTileId());
+        int col = tile.getColumn(tile.getTileId());
+        Tile downTile = board.getSurface()[row + 1][col];
+        if (isSwipeValid(tile, downTile)) {
+            tile.setOnSwipeDown(handler -> {
+                swapTilesVertically(tile, downTile);
+                System.out.println("setOnSwipeDownEvent clicked");
+            });
+        }
+    }
+
+    private boolean isSwipeValid(Tile tile1, Tile tile2) {
+        return tile1.isEmptyTile() && tile2.isMovable() || tile1.isMovable() && tile2.isEmptyTile();
+    }
+
+    private void swapTilesHorizontally(Tile firstTile, Tile secondTile) {
+        int row = firstTile.getRow(firstTile.getTileId());
+        int firstTileCol = firstTile.getColumn(firstTile.getTileId());
+        int secondTileCol = secondTile.getColumn(secondTile.getTileId());
+        Tile[][] surface = board.getSurface();
+        surface[row][firstTileCol] = secondTile;
+        surface[row][secondTileCol] = firstTile;
+    }
+
+    private void swapTilesVertically(Tile firstTile, Tile secondTile) {
+        int firstTileRow = firstTile.getRow(firstTile.getTileId());
+        int secondTileRow = secondTile.getRow(secondTile.getTileId());
+        int col = firstTile.getColumn(firstTile.getTileId());
+        Tile[][] surface = board.getSurface();
+        surface[firstTileRow][col] = secondTile;
+        surface[secondTileRow][col] = firstTile;
     }
 
 }

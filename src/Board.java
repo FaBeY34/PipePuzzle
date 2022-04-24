@@ -13,12 +13,16 @@ public class Board {
         surface = new Tile[4][4];
     }
 
+    public Tile[][] getSurface() {
+        return surface;
+    }
+
     public void addImages(ImageView imageView, Tile newtile) {
         int row = newtile.getRow(newtile.getTileId());
         int colomn = newtile.getColumn(newtile.getTileId());
         pane.add(imageView, colomn, row);
         pane.setAlignment(Pos.CENTER);
-
+        pane.add(newtile, row, colomn);
     }
 
     public GridPane getPane() {
@@ -31,4 +35,6 @@ public class Board {
         colomn = tile.getColumn(tile.getTileId());
         surface[row][colomn] = tile;
     }
+
+
 }
