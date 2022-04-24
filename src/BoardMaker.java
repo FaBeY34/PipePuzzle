@@ -1,5 +1,6 @@
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.GridPane;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -23,6 +24,7 @@ public class BoardMaker {
 
     public void createBoard() throws FileNotFoundException {
         incrementLevel();
+        GridPane boardpane;
         Tile newTile;
         ImageView imageView;
         // Exception burada handle edilebilir
@@ -30,13 +32,18 @@ public class BoardMaker {
         while (fileReader.hasNextLine()) {
             newTile = createTiles(fileReader.getNextLine());
             imageView = getImages(newTile);
+            newTile.getChildren().add(imageView);
             // TODO: imageView'ı tile içerisine koy
-            board.addImages(imageView, newTile); // TODO: Bunu kaldır
+            board.placeTileAndAppendToPane(newTile);
+            // TODO: Bunu kaldır
             newTile.setOnMouseClicked(mouseEvent -> System.out.println("clicked"));
-            board.placeTile(newTile);
+           // setOnSwipeEvent(newTile);
+
             // TODO: Burada tek tek event handling yapabilirsin -> setOnSwipeEvent(newTile);
         }
-        //        setOnSwipeEvents(); // TODO: Ya bu şekilde ya da tek tek yukarıda olduğu gibi event handling yap
+                setOnSwipeEvents();
+
+        // TODO: Ya bu şekilde ya da tek tek yukarıda olduğu gibi event handling yap
         // TODO: board'daki tile'lerin hepsini burada pane'ye ekle board.appendTilesToPane()
     }
 
@@ -171,14 +178,14 @@ public class BoardMaker {
         return null;
     }
 
-    private void setOnSwipeEvents() {
+    public void setOnSwipeEvents() {
         Tile[][] boardSurface = board.getSurface();
         Tile tile;
         for (int i = 0; i < boardSurface.length; i++) {
             for (int j = 0; j < boardSurface[i].length; j++) {
                 tile = boardSurface[i][j];
-//                if (tile.isMovable())
-//                    setOnSwipeEvent(tile);
+               if (tile.isMovable())
+                   setOnSwipeEvent(tile);
 //                tile.setOnMouseClicked(mouseEvent -> System.out.println(mouseEvent.getSceneX()));
             }
         }
@@ -316,7 +323,7 @@ public class BoardMaker {
         int col = tile.getColumn(tile.getTileId());
         Tile leftTile = board.getSurface()[row][col - 1];
         if (isSwipeValid(tile, leftTile)) {
-            tile.setOnSwipeLeft(handler -> {
+            tile.setOnMouseDragged(handler -> {
                 swapTilesHorizontally(tile, leftTile);
                 System.out.println("setOnSwipeLeftEvent clicked");
                 // TODO: değişim sonrası group değişebileceğinden dolayı event'lerin yeniden atanması gerekiyor.
@@ -330,7 +337,7 @@ public class BoardMaker {
         int col = tile.getColumn(tile.getTileId());
         Tile rightTile = board.getSurface()[row][col + 1];
         if (isSwipeValid(tile, rightTile)) {
-            tile.setOnMouseClicked(handler -> {
+            tile.setOnMouseDragged(handler -> {
                 swapTilesHorizontally(tile, rightTile);
                 System.out.println("setOnSwipeRightEvent clicked");
             });
@@ -342,7 +349,7 @@ public class BoardMaker {
         int col = tile.getColumn(tile.getTileId());
         Tile upTile = board.getSurface()[row - 1][col];
         if (isSwipeValid(tile, upTile)) {
-            tile.setOnSwipeUp(handler -> {
+            tile.setOnMouseDragged(handler -> {
                 swapTilesVertically(tile, upTile);
                 System.out.println("setOnSwipeUpEvent clicked");
             });
@@ -354,7 +361,7 @@ public class BoardMaker {
         int col = tile.getColumn(tile.getTileId());
         Tile downTile = board.getSurface()[row + 1][col];
         if (isSwipeValid(tile, downTile)) {
-            tile.setOnSwipeDown(handler -> {
+            tile.setOnMouseDragged(handler -> {
                 swapTilesVertically(tile, downTile);
                 System.out.println("setOnSwipeDownEvent clicked");
             });
@@ -362,7 +369,7 @@ public class BoardMaker {
     }
 
     private boolean isSwipeValid(Tile tile1, Tile tile2) {
-        return tile1.isEmptyTile() && tile2.isMovable() || tile1.isMovable() && tile2.isEmptyTile();
+        return tile1.isEmptyFreeTile() && tile2.isMovable() || tile1.isMovable() && tile2.isEmptyFreeTile();
     }
 
     private void swapTilesHorizontally(Tile firstTile, Tile secondTile) {
@@ -372,6 +379,12 @@ public class BoardMaker {
         Tile[][] surface = board.getSurface();
         surface[row][firstTileCol] = secondTile;
         surface[row][secondTileCol] = firstTile;
+        GridPane boardpane = board.getPane();
+        System.out.println("dsdsdfdfds");
+        GridPane.setConstraints(firstTile,secondTileCol,row);
+        GridPane.setConstraints(secondTile,firstTileCol,row);
+
+
     }
 
     private void swapTilesVertically(Tile firstTile, Tile secondTile) {
@@ -381,6 +394,8 @@ public class BoardMaker {
         Tile[][] surface = board.getSurface();
         surface[firstTileRow][col] = secondTile;
         surface[secondTileRow][col] = firstTile;
+        GridPane.setConstraints(firstTile,secondTileRow,col);
+        GridPane.setConstraints(secondTile,firstTileRow,col);
     }
 
 }

@@ -18,11 +18,7 @@ public class QuickPuzzle extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        Level level1 = new Level(1);
-        //  level1.start(primaryStage);
-        Board board = new Board();
-        BoardMaker boardMaker = new BoardMaker(board);
-        GridPane gridPane = board.getPane();
+
         //BorderPane borderPane = new BorderPane();
         VBox starterMenu = new VBox();
         starterMenu.setAlignment(Pos.BOTTOM_LEFT);
@@ -35,13 +31,72 @@ public class QuickPuzzle extends Application {
         InfoButton.setAlignment(Pos.CENTER);
         starterMenu.getChildren().addAll(playButton, InfoButton, ExitButton);
         starterMenu.setAlignment(Pos.CENTER);
-        Scene scene = new Scene(starterMenu,300,600);
+        Scene scene = new Scene(starterMenu, 300, 600);
         primaryStage.setScene(scene);
         primaryStage.show();
 
-        playButton.setOnMouseClicked(event -> startgame(gridPane, boardMaker));
+
+        BorderPane gameMenu1 = new BorderPane();
+        Button movesBt = new Button("NUMBER OF MOVES");
+        Button NextLevelBt = new Button("NEXT LEVEL");
+        gameMenu1.getChildren().addAll(movesBt,NextLevelBt);
+        movesBt.setAlignment(Pos.CENTER_LEFT);
+        NextLevelBt.setAlignment(Pos.CENTER_RIGHT);
+
+        Level level1 = new Level(1);
+        Board board = new Board();
+        BoardMaker boardMaker = new BoardMaker(board);
+        GridPane gridPane = board.getPane();
+
+        startLevel(gridPane,boardMaker);
+       // NextLevelBt.setOnMouseClicked(event -> );
+
+        BorderPane gameMenu2 = new BorderPane();
+        Button movesBt2 = new Button("NUMBER OF MOVES");
+        Button NextLevelBt2 = new Button("NEXT LEVEL");
+        gameMenu1.getChildren().addAll(movesBt,NextLevelBt);
+        movesBt.setAlignment(Pos.CENTER_LEFT);
+        NextLevelBt.setAlignment(Pos.CENTER_RIGHT);
+
+        BorderPane gameMenu3 = new BorderPane();
+        Button movesBt3 = new Button("NUMBER OF MOVES");
+        Button NextLevelBt3 = new Button("NEXT LEVEL");
+        gameMenu1.getChildren().addAll(movesBt,NextLevelBt);
+        movesBt.setAlignment(Pos.CENTER_LEFT);
+        NextLevelBt.setAlignment(Pos.CENTER_RIGHT);
+
+
+        BorderPane gameMenu4 = new BorderPane();
+        Button movesBt4 = new Button("NUMBER OF MOVES");
+        Button NextLevelBt4 = new Button("NEXT LEVEL");
+        gameMenu1.getChildren().addAll(movesBt,NextLevelBt);
+        movesBt.setAlignment(Pos.CENTER_LEFT);
+        NextLevelBt.setAlignment(Pos.CENTER_RIGHT);
+
+        BorderPane gameMenu5 = new BorderPane();
+        Button movesBt5 = new Button("NUMBER OF MOVES");
+        Button NextLevelBt5 = new Button("NEXT LEVEL");
+        gameMenu1.getChildren().addAll(movesBt,NextLevelBt);
+        movesBt.setAlignment(Pos.CENTER_LEFT);
+        NextLevelBt.setAlignment(Pos.CENTER_RIGHT);
+
+        BorderPane gameMenu6 = new BorderPane();
+        Button movesBt6 = new Button("NUMBER OF MOVES");
+        Button NextLevelBt6= new Button("NEXT LEVEL");
+        gameMenu1.getChildren().addAll(movesBt,NextLevelBt);
+        movesBt.setAlignment(Pos.CENTER_LEFT);
+        NextLevelBt.setAlignment(Pos.CENTER_RIGHT);
+
+
+
+        playButton.setOnMouseClicked(event -> startLevel(gridPane, boardMaker));
         InfoButton.setOnMouseClicked(event -> openınfotext());
         ExitButton.setOnMouseClicked(event -> exitgame(primaryStage));
+
+
+
+
+
 
 
     }
@@ -55,7 +110,7 @@ public class QuickPuzzle extends Application {
 
     }
 
-    private void startgame(GridPane gridPane, BoardMaker boardMaker) {
+    private void startLevel(GridPane gridPane, BoardMaker boardMaker) {
         createBoard(boardMaker);
         Stage stage = new Stage();
         Scene scene = new Scene(gridPane);
