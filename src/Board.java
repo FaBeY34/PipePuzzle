@@ -31,6 +31,15 @@ public class Board extends Node {
         pane.add(tile, colomn, row);
     }
 
+    public void refresh(){
+        pane.getChildren().clear();
+        for (int i = 0; i < surface.length; i++) {
+            for (int j = 0; j < surface[0].length; j++) {
+                pane.add(surface[i][j], j, i);
+            }
+        }
+    }
+
 
     @Override
     public Node getStyleableNode() {

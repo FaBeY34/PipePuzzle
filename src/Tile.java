@@ -6,6 +6,7 @@ public class Tile extends StackPane {
     private String type;
     private String property;
     private ImageView imageView;
+    private String eventName;
 
     public Tile() {
 
@@ -17,6 +18,13 @@ public class Tile extends StackPane {
         this.property = property;
     }
 
+    public String getEventName() {
+        return eventName;
+    }
+
+    public void setEventName(String eventName) {
+        this.eventName = eventName;
+    }
 
     public int getTileId() {
         return tileId;

@@ -48,57 +48,12 @@ public class QuickPuzzle extends Application {
         BoardMaker boardMaker = new BoardMaker(board);
         GridPane gridPane = board.getPane();
 
-        startLevel(gridPane,boardMaker);
+//        startLevel(gridPane,boardMaker);
        // NextLevelBt.setOnMouseClicked(event -> );
-
-        BorderPane gameMenu2 = new BorderPane();
-        Button movesBt2 = new Button("NUMBER OF MOVES");
-        Button NextLevelBt2 = new Button("NEXT LEVEL");
-        gameMenu1.getChildren().addAll(movesBt,NextLevelBt);
-        movesBt.setAlignment(Pos.CENTER_LEFT);
-        NextLevelBt.setAlignment(Pos.CENTER_RIGHT);
-
-        BorderPane gameMenu3 = new BorderPane();
-        Button movesBt3 = new Button("NUMBER OF MOVES");
-        Button NextLevelBt3 = new Button("NEXT LEVEL");
-        gameMenu1.getChildren().addAll(movesBt,NextLevelBt);
-        movesBt.setAlignment(Pos.CENTER_LEFT);
-        NextLevelBt.setAlignment(Pos.CENTER_RIGHT);
-
-
-        BorderPane gameMenu4 = new BorderPane();
-        Button movesBt4 = new Button("NUMBER OF MOVES");
-        Button NextLevelBt4 = new Button("NEXT LEVEL");
-        gameMenu1.getChildren().addAll(movesBt,NextLevelBt);
-        movesBt.setAlignment(Pos.CENTER_LEFT);
-        NextLevelBt.setAlignment(Pos.CENTER_RIGHT);
-
-        BorderPane gameMenu5 = new BorderPane();
-        Button movesBt5 = new Button("NUMBER OF MOVES");
-        Button NextLevelBt5 = new Button("NEXT LEVEL");
-        gameMenu1.getChildren().addAll(movesBt,NextLevelBt);
-        movesBt.setAlignment(Pos.CENTER_LEFT);
-        NextLevelBt.setAlignment(Pos.CENTER_RIGHT);
-
-        BorderPane gameMenu6 = new BorderPane();
-        Button movesBt6 = new Button("NUMBER OF MOVES");
-        Button NextLevelBt6= new Button("NEXT LEVEL");
-        gameMenu1.getChildren().addAll(movesBt,NextLevelBt);
-        movesBt.setAlignment(Pos.CENTER_LEFT);
-        NextLevelBt.setAlignment(Pos.CENTER_RIGHT);
-
-
 
         playButton.setOnMouseClicked(event -> startLevel(gridPane, boardMaker));
         InfoButton.setOnMouseClicked(event -> openınfotext());
         ExitButton.setOnMouseClicked(event -> exitgame(primaryStage));
-
-
-
-
-
-
-
     }
 
     private void openınfotext() {

@@ -1,5 +1,8 @@
+import javafx.event.EventHandler;
+import javafx.geometry.Point2D;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 
 import java.io.File;
@@ -24,27 +27,30 @@ public class BoardMaker {
 
     public void createBoard() throws FileNotFoundException {
         incrementLevel();
-        GridPane boardpane;
         Tile newTile;
         ImageView imageView;
-        // Exception burada handle edilebilir
         fileReader.setFileAndScanner(new File(currentLevel.getPath()));
         while (fileReader.hasNextLine()) {
             newTile = createTiles(fileReader.getNextLine());
             imageView = getImages(newTile);
             newTile.getChildren().add(imageView);
-            // TODO: imageView'ı tile içerisine koy
+            newTile.setOnMousePressed(mouseEvent -> System.out.println("pressed: x:" + mouseEvent.getSceneX() + ", y: " + mouseEvent.getSceneY()));
+            if (newTile.isEmptyFreeTile())
+                newTile.setOnMouseReleased(mouseEvent -> System.out.println("released: x:" + mouseEvent.getSceneX() + ", y: " + mouseEvent.getSceneY()));
             board.placeTileAndAppendToPane(newTile);
-            // TODO: Bunu kaldır
-            newTile.setOnMouseClicked(mouseEvent -> System.out.println("clicked"));
-           // setOnSwipeEvent(newTile);
-
-            // TODO: Burada tek tek event handling yapabilirsin -> setOnSwipeEvent(newTile);
         }
-                setOnSwipeEvents();
+        setOnSwipeEvents();
+        printTileEvents();
+    }
 
-        // TODO: Ya bu şekilde ya da tek tek yukarıda olduğu gibi event handling yap
-        // TODO: board'daki tile'lerin hepsini burada pane'ye ekle board.appendTilesToPane()
+    private void printTileEvents() {
+        for (Tile[] row :
+                board.getSurface()) {
+            for (Tile tile :
+                    row) {
+                System.out.println("id: " + tile.getTileId() + ", event: " + tile.getEventName());
+            }
+        }
     }
 
     private void incrementLevel() {
@@ -184,9 +190,8 @@ public class BoardMaker {
         for (int i = 0; i < boardSurface.length; i++) {
             for (int j = 0; j < boardSurface[i].length; j++) {
                 tile = boardSurface[i][j];
-               if (tile.isMovable())
-                   setOnSwipeEvent(tile);
-//                tile.setOnMouseClicked(mouseEvent -> System.out.println(mouseEvent.getSceneX()));
+                if (tile.isMovable())
+                    setOnSwipeEvent(tile);
             }
         }
     }
@@ -323,8 +328,11 @@ public class BoardMaker {
         int col = tile.getColumn(tile.getTileId());
         Tile leftTile = board.getSurface()[row][col - 1];
         if (isSwipeValid(tile, leftTile)) {
-            tile.setOnMouseDragged(handler -> {
+            tile.setOnSwipeLeft(handler -> {
+                tile.setEventName("Swipe Left");
                 swapTilesHorizontally(tile, leftTile);
+                board.refresh();
+                setOnSwipeEvents();
                 System.out.println("setOnSwipeLeftEvent clicked");
                 // TODO: değişim sonrası group değişebileceğinden dolayı event'lerin yeniden atanması gerekiyor.
             });
@@ -337,8 +345,11 @@ public class BoardMaker {
         int col = tile.getColumn(tile.getTileId());
         Tile rightTile = board.getSurface()[row][col + 1];
         if (isSwipeValid(tile, rightTile)) {
-            tile.setOnMouseDragged(handler -> {
+            tile.setEventName("Swipe Right");
+            tile.setOnSwipeRight(handler -> {
                 swapTilesHorizontally(tile, rightTile);
+                board.refresh();
+                setOnSwipeEvents();
                 System.out.println("setOnSwipeRightEvent clicked");
             });
         }
@@ -349,8 +360,11 @@ public class BoardMaker {
         int col = tile.getColumn(tile.getTileId());
         Tile upTile = board.getSurface()[row - 1][col];
         if (isSwipeValid(tile, upTile)) {
-            tile.setOnMouseDragged(handler -> {
+            tile.setEventName("Swipe Up");
+            tile.setOnSwipeUp(handler -> {
                 swapTilesVertically(tile, upTile);
+                board.refresh();
+                setOnSwipeEvents();
                 System.out.println("setOnSwipeUpEvent clicked");
             });
         }
@@ -361,10 +375,27 @@ public class BoardMaker {
         int col = tile.getColumn(tile.getTileId());
         Tile downTile = board.getSurface()[row + 1][col];
         if (isSwipeValid(tile, downTile)) {
-            tile.setOnMouseDragged(handler -> {
-                swapTilesVertically(tile, downTile);
-                System.out.println("setOnSwipeDownEvent clicked");
+            tile.setEventName("Swipe Down");
+//            tile.setOnSwipeDown(handler -> {
+//                swapTilesVertically(tile, downTile);
+//                board.refresh();
+//                setOnSwipeEvents();
+//                System.out.println("setOnSwipeDownEvent clicked");
+//            });
+            Point2D clickedPoint;
+            tile.setOnMousePressed(e ->{
+
             });
+            double relasedX, releasedY;
+            tile.setOnMouseReleased(e -> {
+                relasedX = e.getSceneX();
+                releasedY = e.getSceneY();
+            });
+            if (areTilesOnTopOfEachOther(clickedX, clickedY, relasedX, releasedY)){
+                swapTilesVertically(tile, downTile);
+                board.refresh();
+                setOnSwipeEvents();
+            }
         }
     }
 
@@ -379,10 +410,10 @@ public class BoardMaker {
         Tile[][] surface = board.getSurface();
         surface[row][firstTileCol] = secondTile;
         surface[row][secondTileCol] = firstTile;
-        GridPane boardpane = board.getPane();
-        System.out.println("dsdsdfdfds");
-        GridPane.setConstraints(firstTile,secondTileCol,row);
-        GridPane.setConstraints(secondTile,firstTileCol,row);
+//        GridPane boardpane = board.getPane();
+//        System.out.println("dsdsdfdfds");
+//        GridPane.setConstraints(firstTile, secondTileCol, row);
+//        GridPane.setConstraints(secondTile, firstTileCol, row);
 
 
     }
@@ -394,8 +425,8 @@ public class BoardMaker {
         Tile[][] surface = board.getSurface();
         surface[firstTileRow][col] = secondTile;
         surface[secondTileRow][col] = firstTile;
-        GridPane.setConstraints(firstTile,secondTileRow,col);
-        GridPane.setConstraints(secondTile,firstTileRow,col);
+//        GridPane.setConstraints(firstTile, secondTileRow, col);
+//        GridPane.setConstraints(secondTile, firstTileRow, col);
     }
 
 }
