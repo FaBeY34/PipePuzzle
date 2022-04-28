@@ -382,20 +382,23 @@ public class BoardMaker {
 //                setOnSwipeEvents();
 //                System.out.println("setOnSwipeDownEvent clicked");
 //            });
-            Point2D clickedPoint;
+            Double clickedX, clickedY;
             tile.setOnMousePressed(e ->{
-
+                clickedX = e.getSceneX();
+                clickedY = e.getSceneY();
             });
-            double relasedX, releasedY;
             tile.setOnMouseReleased(e -> {
+                Double relasedX, releasedY;
                 relasedX = e.getSceneX();
                 releasedY = e.getSceneY();
+                // x, y değerler için null check yapmayı unutmayın
+                if (areTilesOnTopOfEachOther(clickedX, clickedY, relasedX, releasedY)){
+                    swapTilesVertically(tile, downTile);
+                    board.refresh();
+                    setOnSwipeEvents();
+                }
             });
-            if (areTilesOnTopOfEachOther(clickedX, clickedY, relasedX, releasedY)){
-                swapTilesVertically(tile, downTile);
-                board.refresh();
-                setOnSwipeEvents();
-            }
+
         }
     }
 
