@@ -59,7 +59,8 @@ public class Tile extends StackPane {
 //    }
 
     public boolean isMovable() {
-        return !UnmovableTiles.getUnmovableTiles().contains(type);
+        return !(UnmovableTiles.getUnmovableTiles().contains(type)) && ! (this.type.equals("Empty") && this.property.equals("Free"));
+
     }
 
     public boolean isEmptyFreeTile() {

@@ -18,7 +18,7 @@ public class BoardMaker {
     }
 
     private void initializeLevel() {
-        currentLevelNo = 0;
+        currentLevelNo = 5;
         currentLevel = new Level(currentLevelNo);
     }
 
@@ -109,6 +109,7 @@ public class BoardMaker {
                     image = new Image("images/ENDHORIZONTAL.PNG", 150, 150, true, true);
                     return new ImageView(image);
                 } else if (property.equals("Vertical")) {
+                    image = new Image("images/ENDVERTICAL.PNG", 150, 150, true, true);
                     return new ImageView(image);
                 }
                 break;
@@ -164,7 +165,7 @@ public class BoardMaker {
                     // case "00":
 
                     case "01":
-                        image = new Image("images/PIPESTATIC01.jpeg", 100, 100, true, true);
+                        image = new Image("images/PIPESTATIC01.jpeg", 150, 150, true, true);
                         return new ImageView(image);
 
                     // case "10":
@@ -180,9 +181,9 @@ public class BoardMaker {
     public void setOnMouseSwipeEvents() {
         Tile[][] boardSurface = board.getSurface();
         Tile tile;
-        for (int i = 0; i < boardSurface.length; i++) {
-            for (int j = 0; j < boardSurface[i].length; j++) {
-                tile = boardSurface[i][j];
+        for (Tile[] tiles : boardSurface) {
+            for (Tile value : tiles) {
+                tile = value;
                 if (tile.isMovable())
                     setOnSwipeEvent(tile);
             }
@@ -368,6 +369,7 @@ public class BoardMaker {
                 System.out.println("released x: " + e.getSceneX() + ", y: " + e.getSceneY());
                 swapTiles(board.getPressedTile(), board.getReleasedTile());
                 board.refresh();
+                // board.setTilesToPane()
                 clearOnMouseSwipeEvents();
                 setOnMouseSwipeEvents();
             }
@@ -405,7 +407,7 @@ public class BoardMaker {
         if (isSwipeValid(pressedTile, releasedTile)) {
             if (areTilesOnTopOfEachOther(pressedTile, releasedTile))
                 swapTilesVertically(pressedTile, releasedTile);
-            else if (areTilesConsecutive(pressedTile, releasedTile))
+            else if (areTilesSideBySide(pressedTile, releasedTile))
                 swapTilesHorizontally(pressedTile, releasedTile);
         }
     }
