@@ -43,7 +43,7 @@ public class QuickPuzzle extends Application {
         movesBt.setAlignment(Pos.CENTER_LEFT);
         NextLevelBt.setAlignment(Pos.CENTER_RIGHT);
 
-        Level level1 = new Level(1);
+        Level level1 = new Level(2);
         Board board = new Board();
         BoardMaker boardMaker = new BoardMaker(board);
         GridPane gridPane = board.getPane();

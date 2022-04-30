@@ -50,22 +50,19 @@ public class Tile extends StackPane {
         this.property = property;
     }
 
-    public int getRow(int id) {
-        int index = id - 1;
+//    public int getRow() {
+//        return (tileId - 1) / 4;
+//    }
+//
+//    public int getColumn() {
+//        return (tileId - 1) % 4;
+//    }
 
-        return index/4;
-    }
-
-    public int getColumn(int id) {
-       int index = id-1;
-       return index%4;
-    }
-
-    public boolean isMovable(){
+    public boolean isMovable() {
         return !UnmovableTiles.getUnmovableTiles().contains(type);
     }
 
-    public boolean isEmptyFreeTile(){
+    public boolean isEmptyFreeTile() {
 
         return type.equals("Empty") && property.equals("Free");
     }
