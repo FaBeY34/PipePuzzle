@@ -66,7 +66,7 @@ public class Board extends Node {
 
     public void refresh() {
 
-         pane.getChildren().clear();
+        pane.getChildren().clear();
         for (int i = 0; i < surface.length; i++) {
             for (int j = 0; j < surface[0].length; j++) {
                 pane.add(surface[i][j], j, i);
@@ -98,5 +98,35 @@ public class Board extends Node {
     @Override
     public Node getStyleableNode() {
         return super.getStyleableNode();
+    }
+
+    public int getStarterRow() {
+        Tile starter = getStarterTile();
+        return getTileRow(starter);
+    }
+
+    public int getStarterCol() {
+        Tile starter = getStarterTile();
+        return getTileCol(starter);
+    }
+
+    public Tile getStarterTile() {
+        for (Tile[] row : surface) {
+            for (Tile tile : row) {
+                if (tile instanceof Starter) {
+                    return tile;
+                }
+            }
+        }
+        return null;
+    }
+
+    public Tile getTile(int row, int col) {
+        if (row < 0 || col < 0)
+            return null;
+        if (row >= surface.length || col >= surface[0].length)
+            return null;
+
+        return surface[row][col];
     }
 }
