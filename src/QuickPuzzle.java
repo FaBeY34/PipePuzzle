@@ -58,6 +58,7 @@ public class QuickPuzzle extends Application {
 
     private void openınfotext() {
         Stage stage = new Stage();
+        System.out.println(Math.pow(2, 3));
     }
 
     private void exitgame(Stage primaryStage) {
