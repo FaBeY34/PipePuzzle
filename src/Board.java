@@ -15,6 +15,12 @@ public class Board extends Node {
     public Tile[][] getSurface() {
         return surface;
     }
+    // SET SURFACE metodu ekledim .
+    public void setSurface(Tile [][] Nsurface){
+
+        surface = Nsurface;
+
+    }
 
 
     public GridPane getPane() {
@@ -113,7 +119,7 @@ public class Board extends Node {
     public Tile getStarterTile() {
         for (Tile[] row : surface) {
             for (Tile tile : row) {
-                if (tile instanceof Starter) {
+                if (tile.getType().equals("Starter")) {
                     return tile;
                 }
             }

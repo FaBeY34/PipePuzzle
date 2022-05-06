@@ -11,15 +11,12 @@ import java.io.FileNotFoundException;
 
 
 public class QuickPuzzle extends Application {
-    Level level;
 
-    public QuickPuzzle() {
-    }
+    //FinishChecker finishChecker;
+
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-
-        //BorderPane borderPane = new BorderPane();
         VBox starterMenu = new VBox();
         starterMenu.setAlignment(Pos.BOTTOM_LEFT);
 
@@ -39,21 +36,23 @@ public class QuickPuzzle extends Application {
         BorderPane gameMenu1 = new BorderPane();
         Button movesBt = new Button("NUMBER OF MOVES");
         Button NextLevelBt = new Button("NEXT LEVEL");
-        gameMenu1.getChildren().addAll(movesBt,NextLevelBt);
+        gameMenu1.getChildren().addAll(movesBt, NextLevelBt);
         movesBt.setAlignment(Pos.CENTER_LEFT);
         NextLevelBt.setAlignment(Pos.CENTER_RIGHT);
 
-        Level level1 = new Level(2);
+       // Level level1 = new Level(2);
         Board board = new Board();
         BoardMaker boardMaker = new BoardMaker(board);
         GridPane gridPane = board.getPane();
 
 //        startLevel(gridPane,boardMaker);
-       // NextLevelBt.setOnMouseClicked(event -> );
+        // NextLevelBt.setOnMouseClicked(event -> );
 
         playButton.setOnMouseClicked(event -> startLevel(gridPane, boardMaker));
         InfoButton.setOnMouseClicked(event -> openınfotext());
         ExitButton.setOnMouseClicked(event -> exitgame(primaryStage));
+        controlIsGameOver(boardMaker);
+
     }
 
     private void openınfotext() {
@@ -71,14 +70,40 @@ public class QuickPuzzle extends Application {
         Scene scene = new Scene(gridPane);
         stage.setScene(scene);
         stage.show();
+       // controlIsGameOver(boardMaker);
     }
 
     private void createBoard(BoardMaker boardMaker) {
         try {
             boardMaker.createBoard();
+
+            System.out.println("fdsfsdf");
         } catch (FileNotFoundException e) {
             System.out.println("Level file is not found in FileReader class setFileAndScanner method");
         }
+    }
+
+
+    private void controlIsGameOver(BoardMaker boardMaker) {
+        createBoard(boardMaker);
+        FinishChecker finishChecker = new FinishChecker(boardMaker.getBoard());
+
+       /* while (!finishChecker.isGameFinished()) {
+            Board updatedBoard = boardMaker.getBoard();
+            finishChecker.setBoard(updatedBoard);
+            if (finishChecker.isGameFinished()) {
+                System.out.println("GAME İS  FINISHED");
+                break;
+            } else {
+                System.out.println("GAME İS NOT  FINISHED");
+
+            }*/
+          if (finishChecker.isGameFinished()){
+              System.out.println("finished");
+          }
+          else System.out.println("NOT FİNİSHED");
+
+
     }
 
 

@@ -3,6 +3,14 @@ import java.util.Arrays;
 import java.util.List;
 
 public class FinishChecker {
+    public Board getBoard() {
+        return board;
+    }
+
+    public void setBoard(Board board) {
+        this.board = board;
+    }
+
     private Board board;
 
     /* Kontroller
@@ -32,9 +40,11 @@ public class FinishChecker {
     }
 
     private boolean isHorizontalSolutionAvailable() {
+        Tile currentTile = board.getStarterTile();
         if (isLeftDirectionAvailable(board.getStarterTile())) {
             Tile nextTile = board.getTile(board.getStarterRow(), board.getStarterCol() - 1);
             while (!nextTile.getType().equals("End")) {
+
                 nextTile = getNextTile(nextTile);
                 if (nextTile == null)
                     break;
@@ -74,15 +84,28 @@ public class FinishChecker {
     }
 
     private String getDirection(Tile tile) {
-        if (isUpDirectionAvailable(tile))
+        if (Directions.PASSMOVEMENT.equals("")){
+            updateMovement();
+        }
+        if (!Directions.PASSMOVEMENT.equals("Down") && isUpDirectionAvailable(tile)) {
+            Directions.PASSMOVEMENT = "Up";
             return Directions.UP;
-        else if (isDownDirectionAvailable(tile))
+        } else if (!Directions.PASSMOVEMENT.equals("Up") && isDownDirectionAvailable(tile) ) {
+            Directions.PASSMOVEMENT = "Down";
             return Directions.DOWN;
-        else if (isRightDirectionAvailable(tile))
+        } else if (!Directions.PASSMOVEMENT.equals("Left") && isRightDirectionAvailable(tile)) {
+            Directions.PASSMOVEMENT = "Right";
             return Directions.RIGHT;
-        else if (isLeftDirectionAvailable(tile))
+        } else if (!Directions.PASSMOVEMENT.equals("Right") && isLeftDirectionAvailable(tile)) {
+            Directions.PASSMOVEMENT = "Left";
             return Directions.LEFT;
+        }
+
         return null;
+    }
+
+    private void updateMovement() {
+       if (is)
     }
 
     private boolean isRightDirectionAvailable(Tile tile) {
@@ -108,11 +131,26 @@ public class FinishChecker {
     }
 
     private boolean isUpDirectionAvailable(Tile tile) {
-
+        int row = board.getTileRow(tile);
+        int col = board.getTileCol(tile);
+        if (row == 0)
+            return false;
+        else {
+            Tile upTile = board.getTile(row - 1, col);
+            return isPipe(upTile) && isConnectionEstablished(tile, upTile);
+        }
 
     }
 
     private boolean isDownDirectionAvailable(Tile tile) {
+        int row = board.getTileRow(tile);
+        int col = board.getTileCol(tile);
+        if (row == board.getSurface().length)
+            return false;
+        else {
+            Tile downTile = board.getTile(row + 1, col);
+            return isPipe(downTile) && isConnectionEstablished(tile, downTile);
+        }
 
 
     }
@@ -148,10 +186,31 @@ public class FinishChecker {
     }
 
     private boolean isPipe(Tile tile) {
-        return tile instanceof Pipe;
+        return !tile.getType().equals("Empty");
     }
 
     private boolean isVerticalSolutionAvailable() {
+        if (isDownDirectionAvailable(board.getStarterTile())) {
+            Tile nextTile = board.getTile(board.getTileRow(board.getStarterTile()) + 1, board.getTileCol(board.getStarterTile()));
+            while (!(nextTile instanceof End)) {
+                nextTile = getNextTile(nextTile);
+                if (nextTile == null)
+                    break;
+            }
+            return nextTile != null;
+        }
+        if (isUpDirectionAvailable(board.getStarterTile())) {
+            Tile nextTile = board.getTile(board.getTileRow(board.getStarterTile()) - 1, board.getTileCol(board.getStarterTile()));
+            while (!(nextTile instanceof End)) {
+                nextTile = getNextTile(nextTile);
+                if (nextTile == null)
+                    break;
+            }
+            return nextTile != null;
+        }
+
+        return false;
+
 
     }
 }
@@ -187,4 +246,5 @@ class Directions {
     static final String RIGHT = "Right";
     static final String UP = "Up";
     static final String DOWN = "Down";
+    static String PASSMOVEMENT = "";
 }
