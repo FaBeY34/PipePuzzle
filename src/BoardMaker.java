@@ -40,6 +40,7 @@ public class BoardMaker {
     }
 
     public void createBoard() throws FileNotFoundException {
+        resetBoard();
         incrementLevel();
         Tile newTile;
         ImageView imageView;
@@ -50,6 +51,14 @@ public class BoardMaker {
             board.placeTileAndAppendToPane(newTile);
         }
         setOnMouseSwipeEvents();
+    }
+
+    private void resetBoard() {
+        for (Tile[] row : board.getSurface()) {
+            for (Tile tile : row) {
+                tile = null;
+            }
+        }
     }
 
     private String getPathcurrentLevel() {
@@ -378,6 +387,10 @@ public class BoardMaker {
     private Tile getReleasedTile(double x, double y) {
         int col = (int) (x / 150);
         int row = (int) (y / 150);
+        FinishChecker finishChecker = new FinishChecker(board);
+        if (finishChecker.isGameFinished())
+            System.out.println("game finished");
+        else System.out.println("game is not finished");
         return board.getSurface()[row][col];
     }
 

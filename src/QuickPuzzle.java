@@ -34,6 +34,8 @@ public class QuickPuzzle extends Application {
         primaryStage.show();
 
 
+
+
         BorderPane gameMenu1 = new BorderPane();
         Button movesBt = new Button("NUMBER OF MOVES");
         Button NextLevelBt = new Button("NEXT LEVEL");
@@ -45,6 +47,16 @@ public class QuickPuzzle extends Application {
         Board board = new Board();
         BoardMaker boardMaker = new BoardMaker(board);
         GridPane gridPane = board.getPane();
+
+//        Button btn = new Button(); // nextLevel btn
+//        btn.setOnMouseClicked(e -> {
+//            if (finishChecker.isGameFinished()) {
+//                PathDrawer drawer = new PathDrawer(finishChecker.getPath());
+//                drawer.startTranstion();
+//                createBoard(boardMaker);
+//            }
+//        });
+
 
 //        startLevel(gridPane,boardMaker);
         // NextLevelBt.setOnMouseClicked(event -> );
