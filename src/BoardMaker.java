@@ -35,7 +35,7 @@ public class BoardMaker {
     }
 
     private void initializeLevel() {
-        currentLevelNo = 0;
+        currentLevelNo = 5;
         //currentLevel = new Level(currentLevelNo);
     }
 
@@ -43,7 +43,7 @@ public class BoardMaker {
         resetBoard();
         incrementLevel();
         Tile newTile;
-        ImageView imageView;
+
         fileReader.setFileAndScanner(new File(getPathcurrentLevel()));
         while (fileReader.hasNextLine()) {
             newTile = createTiles(fileReader.getNextLine());
@@ -152,7 +152,7 @@ public class BoardMaker {
                 newTile.getChildren().add(new ImageView(new Image("images/PIPESTATICHORIZONTAL.jpeg", 150, 150, true, true)));
                 break;
             case "PipeStaticVertical":
-                newTile.getChildren().add(new ImageView(new Image("images/PIPESTATICHORIZONTAL.jpeg", 150, 150, true, true)));
+                newTile.getChildren().add(new ImageView(new Image("images/PIPESTATICVERTICAL.jpeg", 150, 150, true, true)));
                 break;
             case "PipeStatic01":
                 newTile.getChildren().add(new ImageView(new Image("images/PIPESTATIC01.jpeg", 150, 150, true, true)));
@@ -362,6 +362,8 @@ public class BoardMaker {
             if (areTilesConsecutive(board.getPressedTile(), board.getReleasedTile())) {
                 System.out.println("released x: " + e.getSceneX() + ", y: " + e.getSceneY());
                 swapTiles(board.getPressedTile(), board.getReleasedTile());
+                FinishChecker finishChecker = new FinishChecker(board);
+                System.out.println(finishChecker.getSolutionPath());
                 board.refresh();
                 // board.setTilesToPane()
                 clearOnMouseSwipeEvents();
@@ -387,11 +389,11 @@ public class BoardMaker {
     private Tile getReleasedTile(double x, double y) {
         int col = (int) (x / 150);
         int row = (int) (y / 150);
-        FinishChecker finishChecker = new FinishChecker(board);
-        if (finishChecker.isGameFinished())
-            System.out.println("game finished");
-        else System.out.println("game is not finished");
-        return board.getSurface()[row][col];
+
+
+        if (row <= 3 && col <= 3)
+            return board.getSurface()[row][col];
+        return null;
     }
 
     private void setOnMousePressedEvent(Tile tile) {
@@ -430,20 +432,19 @@ public class BoardMaker {
 
     private boolean areTilesConsecutive(Tile pressedTile, Tile releasedTile) {
         return areTilesOnTopOfEachOther(pressedTile, releasedTile)
-                || areTilesSideBySide(pressedTile, releasedTile)
-                && areTilesNotDiagonal(pressedTile, releasedTile);
+                || areTilesSideBySide(pressedTile, releasedTile);
+
     }
 
-    private boolean areTilesNotDiagonal(Tile pressedTile, Tile releasedTile) {
-        return !(areTilesSideBySide(pressedTile, releasedTile) && areTilesOnTopOfEachOther(pressedTile, releasedTile));
-    }
 
     private boolean areTilesSideBySide(Tile pressedTile, Tile releasedTile) {
-        return Math.abs(board.getTileCol(pressedTile) - board.getTileCol(releasedTile)) == 1;
+        return Math.abs(board.getTileCol(pressedTile) - board.getTileCol(releasedTile)) == 1
+                && Math.abs(board.getTileRow(pressedTile) - board.getTileRow(releasedTile)) == 0;
     }
 
     private boolean areTilesOnTopOfEachOther(Tile pressedTile, Tile releasedTile) {
-        return Math.abs(board.getTileRow(pressedTile) - board.getTileRow(releasedTile)) == 1;
+        return Math.abs(board.getTileRow(pressedTile) - board.getTileRow(releasedTile)) == 1
+                && Math.abs(board.getTileCol(pressedTile) - board.getTileCol(releasedTile)) == 0;
     }
 
     private boolean isSwipeValid(Tile tile1, Tile tile2) {

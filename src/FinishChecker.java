@@ -216,6 +216,12 @@ public class FinishChecker {
 
 
     }
+    public ArrayList<Tile>getSolutionPath(){
+        if (isGameFinished()){
+            return path;
+        }
+        return null;
+    }
 }
 
 class PipeProps {

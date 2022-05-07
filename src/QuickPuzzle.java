@@ -11,13 +11,32 @@ import java.io.FileNotFoundException;
 
 
 public class QuickPuzzle extends Application {
-
-    //FinishChecker finishChecker;
-
-
     @Override
     public void start(Stage primaryStage) throws Exception {
         //BorderPane borderPane = new BorderPane();
+        createIntroPanel(primaryStage);
+
+      //  BoardMaker boardMaker = new BoardMaker(board);
+
+        /*Button nextLevelBt = new Button("NEXT LEVEL"); // nextLevel btn
+        nextLevelBt.setOnMouseClicked(e -> {
+            if (finishChecker.isGameFinished()) {
+
+            }
+            PathDrawer drawer = new PathDrawer(finishChecker.getPath());
+            drawer.startTranstion();
+            createBoard(boardMaker);
+
+        });*/
+//        });
+
+
+
+
+
+    }
+
+    private void createIntroPanel(Stage primaryStage) {
         VBox starterMenu = new VBox();
         starterMenu.setAlignment(Pos.BOTTOM_LEFT);
 
@@ -32,39 +51,9 @@ public class QuickPuzzle extends Application {
         Scene scene = new Scene(starterMenu, 300, 600);
         primaryStage.setScene(scene);
         primaryStage.show();
-
-
-
-
-        BorderPane gameMenu1 = new BorderPane();
-        Button movesBt = new Button("NUMBER OF MOVES");
-        Button NextLevelBt = new Button("NEXT LEVEL");
-        gameMenu1.getChildren().addAll(movesBt,NextLevelBt);
-        movesBt.setAlignment(Pos.CENTER_LEFT);
-        NextLevelBt.setAlignment(Pos.CENTER_RIGHT);
-
-        Level level1 = new Level(2);
-        Board board = new Board();
-        BoardMaker boardMaker = new BoardMaker(board);
-        GridPane gridPane = board.getPane();
-
-//        Button btn = new Button(); // nextLevel btn
-//        btn.setOnMouseClicked(e -> {
-//            if (finishChecker.isGameFinished()) {
-//                PathDrawer drawer = new PathDrawer(finishChecker.getPath());
-//                drawer.startTranstion();
-//                createBoard(boardMaker);
-//            }
-//        });
-
-
-//        startLevel(gridPane,boardMaker);
-        // NextLevelBt.setOnMouseClicked(event -> );
-
-        playButton.setOnMouseClicked(event -> startLevel(gridPane, boardMaker));
-        InfoButton.setOnMouseClicked(event -> openınfotext());
-        ExitButton.setOnMouseClicked(event -> exitgame(primaryStage));
+       // createFirstLevel(playButton);
     }
+
 
     private void openınfotext() {
         Stage stage = new Stage();
@@ -75,24 +64,12 @@ public class QuickPuzzle extends Application {
 
     }
 
-    private void startLevel(GridPane gridPane, BoardMaker boardMaker) {
-        createBoard(boardMaker);
-        Stage stage = new Stage();
-        Scene scene = new Scene(gridPane);
-        stage.setScene(scene);
-        stage.show();
-    }
 
-    private void createBoard(BoardMaker boardMaker) {
-        try {
-            boardMaker.createBoard();
-        } catch (FileNotFoundException e) {
-            System.out.println("Level file is not found in FileReader class setFileAndScanner method");
-        }
+
     }
 
 
-}
+
 
 
 
