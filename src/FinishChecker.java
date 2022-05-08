@@ -224,7 +224,7 @@ public class FinishChecker {
             if (!tile.getType().equals("Starter"))
                 gamePath.getElements().add(new LineTo(tile.getLayoutX()+75, tile.getLayoutY()+75));
         }
-       // pane.getChildren().add(gamePath);
+        pane.getChildren().add(gamePath);
         return gamePath;
     }
 

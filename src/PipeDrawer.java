@@ -27,8 +27,7 @@ public class PipeDrawer {
         pt.setDuration(Duration.millis(4000));
         pt.setAutoReverse(false);
         pt.play();
-        Group group = new Group(circle);
-        scene = new Scene(group);
+
 
     }
 
