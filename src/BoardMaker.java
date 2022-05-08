@@ -6,9 +6,34 @@ import java.io.File;
 import java.io.FileNotFoundException;
 
 public class BoardMaker {
+    public BoardMaker(FileReader fileReader) {
+
+        this.fileReader = fileReader;
+    }
+
+    public BoardMaker() {
+        fileReader = new FileReader();
+    }
+
+    public Board getBoard() {
+        return board;
+    }
+
+    public void setBoard(Board board) {
+        this.board = board;
+    }
+
     private Board board;
     private FileReader fileReader;
-    private Level currentLevel;
+
+    public int getCurrentLevelNo() {
+        return currentLevelNo;
+    }
+
+    public void setCurrentLevelNo(int currentLevelNo) {
+        this.currentLevelNo = currentLevelNo;
+    }
+
     private int currentLevelNo;
 
     public BoardMaker(Board board) {
@@ -18,22 +43,27 @@ public class BoardMaker {
     }
 
     private void initializeLevel() {
-        currentLevelNo = 5;
-        currentLevel = new Level(currentLevelNo);
+        currentLevelNo = 0;
+        //currentLevel = new Level(currentLevelNo);
     }
 
     public void createBoard() throws FileNotFoundException {
+
         incrementLevel();
         Tile newTile;
-        ImageView imageView;
-        fileReader.setFileAndScanner(new File(currentLevel.getPath()));
+
+        fileReader.setFileAndScanner(new File(getPathcurrentLevel()));
         while (fileReader.hasNextLine()) {
             newTile = createTiles(fileReader.getNextLine());
-            imageView = getImages(newTile);
-            newTile.getChildren().add(imageView);
+            addımages(newTile);
             board.placeTileAndAppendToPane(newTile);
         }
         setOnMouseSwipeEvents();
+    }
+
+
+    private String getPathcurrentLevel() {
+        return "src/level" + currentLevelNo + ".txt";
     }
 
     private void printTileEvents() {
@@ -48,7 +78,7 @@ public class BoardMaker {
 
     private void incrementLevel() {
         currentLevelNo++;
-        currentLevel.setLevelNo(currentLevelNo);
+        //  currentLevel.setLevelNo(currentLevelNo);
     }
 
     private Tile createTiles(String inputLine) {
@@ -89,93 +119,58 @@ public class BoardMaker {
         return null;
     }
 
-    private ImageView getImages(Tile tile) {
-        String type = tile.getType();
-        String property = tile.getProperty();
-        Image image = null;
-        switch (type) {
-            case "Starter":
-                if (property.equals("Horizontal")) {
-                    image = new Image("images/STARTERHORIZONTAL.PNG", 150, 150, true, true);
-                    return new ImageView((image));
 
-                } else if (property.equals("Vertical")) {
-                    image = new Image("images/STARTERVERTICAL.PNG", 150, 150, true, true);
-                    return new ImageView(image);
-                }
+    private void addımages(Tile newTile) {
+        String type = newTile.getType();
+        String property = newTile.getProperty();
+        String typePro = type + property;
+        switch (typePro) {
+            case "StarterVertical":
+                newTile.getChildren().add(new ImageView(new Image("images/STARTERVERTICAL.PNG", 150, 150, true, true)));
                 break;
-            case "End":
-                if (property.equals("Horizontal")) {
-                    image = new Image("images/ENDHORIZONTAL.PNG", 150, 150, true, true);
-                    return new ImageView(image);
-                } else if (property.equals("Vertical")) {
-                    image = new Image("images/ENDVERTICAL.PNG", 150, 150, true, true);
-                    return new ImageView(image);
-                }
+            case "StarterHorizontal":
+                newTile.getChildren().add(new ImageView(new Image("images/STARTERHORIZONTAL.PNG", 150, 150, true, true)));
                 break;
-            case "Empty":
-                if (property.equals("none")) {
-                    image = new Image("images/EMPTYNONE.jpeg", 150, 150, true, true);
-                    return new ImageView(image);
-
-                } else if (property.equals("Free")) {
-                    image = new Image("images/EMPTYFREE.jpeg", 151, 152, true, true);
-                    return new ImageView(image);
-                }
-            case "Pipe":
-                switch (property) {
-                    case "Horizontal":
-                        image = new Image("images/PIPEHORIZONTAL.jpeg", 150, 150, true, true);
-                        return new ImageView((image));
-
-                    case "Vertical":
-                        image = new Image("images/PIPEVERTICAL.jpeg", 150, 150, true, true);
-                        return new ImageView(image);
-
-
-                    case "00":
-                        image = new Image("images/CURVED00.jpeg", 150, 150, true, true);
-                        return new ImageView((image));
-
-                    case "01":
-                        image = new Image("images/CURVED01.jpeg", 150, 150, true, true);
-                        return new ImageView(image);
-
-                    case "10":
-                        image = new Image("images/CURVED10.jpeg", 150, 150, true, true);
-                        return new ImageView(image);
-
-                    case "11":
-                        image = new Image("images/CURVED11.jpeg", 150, 150, true, true);
-                        return new ImageView(image);
-
-                }
+            case "PipeVertical":
+                newTile.getChildren().add(new ImageView(new Image("images/PIPEVERTICAL.jpeg", 150, 150, true, true)));
                 break;
-            case "PipeStatic":
-                switch (property) {
-                    case "Horizontal":
-                        image = new Image("images/PIPESTATICHORIZONTAL.jpeg", 150, 150, true, true);
-                        return new ImageView(image);
-
-                    case "Vertical":
-                        image = new Image("images/PIPESTATICVERTICAL.jpeg", 150, 150, true, true);
-                        return new ImageView(image);
-
-
-                    // case "00":
-
-                    case "01":
-                        image = new Image("images/PIPESTATIC01.jpeg", 150, 150, true, true);
-                        return new ImageView(image);
-
-                    // case "10":
-
-                    // case "11":
-
-
-                }
+            case "PipeHorizontal":
+                newTile.getChildren().add(new ImageView(new Image("images/PIPEHORIZONTAL.jpeg", 150, 150, true, true)));
+                break;
+            case "Pipe00":
+                newTile.getChildren().add(new ImageView(new Image("images/CURVED00.jpeg", 150, 150, true, true)));
+                break;
+            case "Pipe01":
+                newTile.getChildren().add(new ImageView(new Image("images/CURVED01.jpeg", 150, 150, true, true)));
+                break;
+            case "Pipe10":
+                newTile.getChildren().add(new ImageView(new Image("images/CURVED10.jpeg", 150, 150, true, true)));
+                break;
+            case "Pipe11":
+                newTile.getChildren().add(new ImageView(new Image("images/CURVED11.jpeg", 150, 150, true, true)));
+                break;
+            case "PipeStaticHorizontal":
+                newTile.getChildren().add(new ImageView(new Image("images/PIPESTATICHORIZONTAL.jpeg", 150, 150, true, true)));
+                break;
+            case "PipeStaticVertical":
+                newTile.getChildren().add(new ImageView(new Image("images/PIPESTATICVERTICAL.jpeg", 150, 150, true, true)));
+                break;
+            case "PipeStatic01":
+                newTile.getChildren().add(new ImageView(new Image("images/PIPESTATIC01.jpeg", 150, 150, true, true)));
+                break;
+            case "Emptynone":
+                newTile.getChildren().add(new ImageView(new Image("images/EMPTYNONE.jpeg", 150, 150, true, true)));
+                break;
+            case "EmptyFree":
+                newTile.getChildren().add(new ImageView(new Image("images/EMPTYFREE.jpeg", 150, 150, true, true)));
+                break;
+            case "EndHorizontal":
+                newTile.getChildren().add(new ImageView(new Image("images/ENDHORIZONTAL.PNG", 150, 150, true, true)));
+                break;
+            case "EndVertical":
+                newTile.getChildren().add(new ImageView(new Image("images/ENDVERTICAL.PNG", 150, 150, true, true)));
+                break;
         }
-        return null;
     }
 
     public void setOnMouseSwipeEvents() {
@@ -368,6 +363,8 @@ public class BoardMaker {
             if (areTilesConsecutive(board.getPressedTile(), board.getReleasedTile())) {
                 System.out.println("released x: " + e.getSceneX() + ", y: " + e.getSceneY());
                 swapTiles(board.getPressedTile(), board.getReleasedTile());
+                FinishChecker finishChecker = new FinishChecker(board);
+                System.out.println(finishChecker.getSolutionPath());
                 board.refresh();
                 // board.setTilesToPane()
                 clearOnMouseSwipeEvents();
@@ -393,7 +390,11 @@ public class BoardMaker {
     private Tile getReleasedTile(double x, double y) {
         int col = (int) (x / 150);
         int row = (int) (y / 150);
-        return board.getSurface()[row][col];
+
+
+        if (row <= 3 && col <= 3)
+            return board.getSurface()[row][col];
+        return null;
     }
 
     private void setOnMousePressedEvent(Tile tile) {
@@ -432,20 +433,19 @@ public class BoardMaker {
 
     private boolean areTilesConsecutive(Tile pressedTile, Tile releasedTile) {
         return areTilesOnTopOfEachOther(pressedTile, releasedTile)
-                || areTilesSideBySide(pressedTile, releasedTile)
-                && areTilesNotDiagonal(pressedTile, releasedTile);
+                || areTilesSideBySide(pressedTile, releasedTile);
+
     }
 
-    private boolean areTilesNotDiagonal(Tile pressedTile, Tile releasedTile) {
-        return !(areTilesSideBySide(pressedTile, releasedTile) && areTilesOnTopOfEachOther(pressedTile, releasedTile));
-    }
 
     private boolean areTilesSideBySide(Tile pressedTile, Tile releasedTile) {
-        return Math.abs(board.getTileCol(pressedTile) - board.getTileCol(releasedTile)) == 1;
+        return Math.abs(board.getTileCol(pressedTile) - board.getTileCol(releasedTile)) == 1
+                && Math.abs(board.getTileRow(pressedTile) - board.getTileRow(releasedTile)) == 0;
     }
 
     private boolean areTilesOnTopOfEachOther(Tile pressedTile, Tile releasedTile) {
-        return Math.abs(board.getTileRow(pressedTile) - board.getTileRow(releasedTile)) == 1;
+        return Math.abs(board.getTileRow(pressedTile) - board.getTileRow(releasedTile)) == 1
+                && Math.abs(board.getTileCol(pressedTile) - board.getTileCol(releasedTile)) == 0;
     }
 
     private boolean isSwipeValid(Tile tile1, Tile tile2) {

@@ -1,17 +1,22 @@
+import javafx.scene.layout.GridPane;
+import javafx.scene.shape.LineTo;
+import javafx.scene.shape.MoveTo;
+import javafx.scene.shape.Path;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 public class FinishChecker {
     private Board board;
+    private ArrayList<Tile> path = new ArrayList<>();
 
     /* Kontroller
-        1- End tile kontrolü
-            1.1- End tile bağlantı kontrolü ->
-        2- Pipe kontrolü
-            2.1- Pipe bağlantı kontrolü ->
-
-     */
+            1- End tile kontrolü
+                1.1- End tile bağlantı kontrolü ->
+            2- Pipe kontrolü
+                2.1- Pipe bağlantı kontrolü ->
+         */
     public FinishChecker(Board board) {
         this.board = board;
     }
@@ -19,9 +24,18 @@ public class FinishChecker {
     public FinishChecker() {
     }
 
+
+    public Board getBoard() {
+        return board;
+    }
+
+    public void setBoard(Board board) {
+        this.board = board;
+    }
+
     public boolean isGameFinished() {
         Tile starter = board.getStarterTile();
-
+        path.add(starter);
         String starterProp = starter.getProperty();
 
         if (starterProp.equals(PipeProps.VERTICAL))
@@ -34,20 +48,15 @@ public class FinishChecker {
     private boolean isHorizontalSolutionAvailable() {
         if (isLeftDirectionAvailable(board.getStarterTile())) {
             Tile nextTile = board.getTile(board.getStarterRow(), board.getStarterCol() - 1);
+            path.add(nextTile);
             while (!nextTile.getType().equals("End")) {
                 nextTile = getNextTile(nextTile);
-                if (nextTile == null)
+                if (nextTile == null) {
+                    path.clear();
                     break;
-            }
-            return nextTile != null;
-        }
-
-        if (isRightDirectionAvailable(board.getStarterTile())) {
-            Tile nextTile = board.getTile(board.getStarterRow(), board.getStarterCol() + 1);
-            while (!nextTile.getType().equals("End")) {
-                nextTile = getNextTile(nextTile);
-                if (nextTile == null)
-                    break;
+                }
+                path.add(nextTile);
+                System.out.println(path);
             }
             return nextTile != null;
         }
@@ -74,25 +83,27 @@ public class FinishChecker {
     }
 
     private String getDirection(Tile tile) {
-        if (isUpDirectionAvailable(tile))
+        if (isUpDirectionAvailable(tile)) {
             return Directions.UP;
-        else if (isDownDirectionAvailable(tile))
+        } else if (isDownDirectionAvailable(tile)) {
             return Directions.DOWN;
-        else if (isRightDirectionAvailable(tile))
+        } else if (isRightDirectionAvailable(tile)) {
             return Directions.RIGHT;
-        else if (isLeftDirectionAvailable(tile))
+        } else if (isLeftDirectionAvailable(tile)) {
             return Directions.LEFT;
+        }
+
         return null;
     }
 
     private boolean isRightDirectionAvailable(Tile tile) {
         int row = board.getTileRow(tile);
         int col = board.getTileCol(tile);
-        if (col == board.getSurface().length)
+        if ((col + 1) == board.getSurface().length)
             return false;
         else {
             Tile rightTile = board.getTile(row, col + 1);
-            return isPipe(rightTile) && isConnectionEstablished(tile, rightTile);
+            return isPipe(rightTile) && isHorConnectionEstablished(tile, rightTile) && !path.contains(rightTile);
         }
     }
 
@@ -103,16 +114,31 @@ public class FinishChecker {
             return false;
         else {
             Tile leftTile = board.getTile(row, col - 1);
-            return isPipe(leftTile) && isConnectionEstablished(tile, leftTile);
+            return isPipe(leftTile) && isHorConnectionEstablished(tile, leftTile) && !path.contains(leftTile);
         }
     }
 
     private boolean isUpDirectionAvailable(Tile tile) {
-
+        int row = board.getTileRow(tile);
+        int col = board.getTileCol(tile);
+        if (row == 0)
+            return false;
+        else {
+            Tile upTile = board.getTile(row - 1, col);
+            return isPipe(upTile) && isVerConnectionEstablished(tile, upTile) && !path.contains(upTile);
+        }
 
     }
 
     private boolean isDownDirectionAvailable(Tile tile) {
+        int row = board.getTileRow(tile);
+        int col = board.getTileCol(tile);
+        if ((row + 1) == board.getSurface().length)
+            return false;
+        else {
+            Tile downTile = board.getTile(row + 1, col);
+            return isPipe(downTile) && isVerConnectionEstablished(tile, downTile) && !path.contains(downTile);
+        }
 
 
     }
@@ -120,6 +146,18 @@ public class FinishChecker {
 
     private boolean isConnectionEstablished(Tile tile1, Tile tile2) {
         return isVerConnectionEstablished(tile1, tile2) || isHorConnectionEstablished(tile1, tile2);
+    }
+
+    private boolean isVerConnectionEstablished(Tile tile1, Tile tile2) {
+        int tile1Row = board.getTileRow(tile1);
+        int tile2Row = board.getTileRow(tile2);
+        List<String> propsOfBottomEntrance = PipeProps.getPropsOfBottomEntrance();
+        List<String> propsOfUpEntrance = PipeProps.getPropsOfUpEntrance();
+        if (tile1Row < tile2Row) {
+            return propsOfUpEntrance.contains(tile2.getProperty()) && propsOfBottomEntrance.contains(tile1.getProperty());
+        } else {
+            return propsOfUpEntrance.contains(tile1.getProperty()) && propsOfBottomEntrance.contains(tile2.getProperty());
+        }
     }
 
     private boolean isHorConnectionEstablished(Tile tile1, Tile tile2) {
@@ -135,56 +173,99 @@ public class FinishChecker {
 
     }
 
-    private boolean isVerConnectionEstablished(Tile tile1, Tile tile2) {
-        int tile1Row = board.getTileRow(tile1);
-        int tile2Row = board.getTileRow(tile2);
-        List<String> propsOfBottomEntrance = PipeProps.getPropsOfBottomEntrance();
-        List<String> propsOfUpEntrance = PipeProps.getPropsOfUpEntrance();
-        if (tile1Row < tile2Row) {
-            return propsOfUpEntrance.contains(tile1.getProperty()) && propsOfBottomEntrance.contains(tile2.getProperty());
-        } else {
-            return propsOfUpEntrance.contains(tile2.getProperty()) && propsOfBottomEntrance.contains(tile1.getProperty());
-        }
-    }
-
     private boolean isPipe(Tile tile) {
-        return tile instanceof Pipe;
+        return !tile.getType().equals("Empty");
     }
 
     private boolean isVerticalSolutionAvailable() {
+        if (isDownDirectionAvailable(board.getStarterTile())) {
+            Tile nextTile = board.getTile(board.getTileRow(board.getStarterTile()) + 1, board.getTileCol(board.getStarterTile()));
+            path.add(nextTile);
+            while (!(nextTile.getType().equals("End"))) {
+                nextTile = getNextTile(nextTile);
+                if (nextTile == null) {
+                    path.clear();
+                    break;
+                }
+                path.add(nextTile);
+                System.out.println(path);
+            }
+            return nextTile != null;
+        }
+        if (isUpDirectionAvailable(board.getStarterTile())) {
+            Tile nextTile = board.getTile(board.getTileRow(board.getStarterTile()) - 1, board.getTileCol(board.getStarterTile()));
+            while (!(nextTile instanceof End)) {
+                nextTile = getNextTile(nextTile);
+                if (nextTile == null)
+                    break;
+            }
+            return nextTile != null;
+        }
 
+        return false;
+
+
+    }
+
+    public ArrayList<Tile> getSolutionPath() {
+        if (isGameFinished()) {
+            return path;
+        }
+        return null;
+    }
+
+    public Path getPath() {
+        GridPane pane = board.getPane();
+        Path gamePath = new Path();
+        ArrayList<Tile> Tiles = path;
+        Tile starter = board.getStarterTile();
+        gamePath.getElements().add(new MoveTo(starter.getLayoutX()+75, starter.getLayoutY()+75));
+        for (Tile tile : Tiles) {
+            if (!tile.getType().equals("Starter"))
+                gamePath.getElements().add(new LineTo(tile.getLayoutX()+75, tile.getLayoutY()+75));
+        }
+       // pane.getChildren().add(gamePath);
+        return gamePath;
+    }
+
+    private Tile getStarter(ArrayList<Tile> tiles) {
+        for (Tile tile : tiles) {
+            if (tile.getType().equals("Starter"))
+                return tile;
+        }
+        return null;
     }
 }
 
-class PipeProps {
-    static final String VERTICAL = "Vertical";
-    static final String HORIZONTAL = "Horizontal";
-    static final String _00 = "00";
-    static final String _01 = "01";
-    static final String _10 = "10";
-    static final String _11 = "11";
+    class PipeProps {
+        static final String VERTICAL = "Vertical";
+        static final String HORIZONTAL = "Horizontal";
+        static final String _00 = "00";
+        static final String _01 = "01";
+        static final String _10 = "10";
+        static final String _11 = "11";
 
-    public static List<String> getPropsOfUpEntrance() {
-        return new ArrayList<>(Arrays.asList(_00, _01, VERTICAL));
+        public static List<String> getPropsOfUpEntrance() {
+            return new ArrayList<>(Arrays.asList(_00, _01, VERTICAL));
+        }
+
+        public static List<String> getPropsOfBottomEntrance() {
+            return new ArrayList<>(Arrays.asList(_10, _11, VERTICAL));
+        }
+
+
+        public static List<String> getPropsOfRightEntrance() {
+            return new ArrayList<>(Arrays.asList(_01, _11, HORIZONTAL));
+        }
+
+        public static List<String> getPropsOfLeftEntrance() {
+            return new ArrayList<>(Arrays.asList(_10, _00, HORIZONTAL));
+        }
     }
 
-    public static List<String> getPropsOfBottomEntrance() {
-        return new ArrayList<>(Arrays.asList(_10, _11, VERTICAL));
+    class Directions {
+        static final String LEFT = "Left";
+        static final String RIGHT = "Right";
+        static final String UP = "Up";
+        static final String DOWN = "Down";
     }
-
-
-    public static List<String> getPropsOfRightEntrance() {
-        return new ArrayList<>(Arrays.asList(_01, _11, HORIZONTAL));
-    }
-
-    public static List<String> getPropsOfLeftEntrance() {
-        return new ArrayList<>(Arrays.asList(_10, _00, HORIZONTAL));
-    }
-}
-
-class Directions {
-    static final String LEFT = "Left";
-    static final String RIGHT = "Right";
-    static final String UP = "Up";
-    static final String DOWN = "Down";
-}
