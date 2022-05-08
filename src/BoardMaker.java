@@ -7,46 +7,17 @@ import java.io.File;
 import java.io.FileNotFoundException;
 
 public class BoardMaker {
-
-
-    public BoardMaker(FileReader fileReader) {
-
-        this.fileReader = fileReader;
-    }
-
-    public BoardMaker() {
-        button = new Button(""+numberOfMovements);
-        fileReader = new FileReader();
-    }
-
-    public Board getBoard() {
-        return board;
-    }
-
-    public void setBoard(Board board) {
-        this.board = board;
-    }
-
     private Board board;
-
-    public FileReader getFileReader() {
-        return fileReader;
-    }
-
     private FileReader fileReader;
-
-    public int getCurrentLevelNo() {
-        return currentLevelNo;
-    }
-
-    public void setCurrentLevelNo(int currentLevelNo) {
-        this.currentLevelNo = currentLevelNo;
-    }
-
     private int currentLevelNo;
     public int numberOfMovements = 0;
+    Button button;
 
-    Button button ;
+
+    public BoardMaker() {
+        button = new Button("NUMBER OF MOVES " + numberOfMovements);
+        fileReader = new FileReader();
+    }
 
     public BoardMaker(Board board) {
         this.board = board;
@@ -55,9 +26,10 @@ public class BoardMaker {
         initializeLevel();
     }
 
+
     private void initializeLevel() {
         currentLevelNo = 0;
-        //currentLevel = new Level(currentLevelNo);
+
     }
 
     public void createBoard() throws FileNotFoundException {
@@ -79,19 +51,9 @@ public class BoardMaker {
         return "src/level" + currentLevelNo + ".txt";
     }
 
-    private void printTileEvents() {
-        for (Tile[] row :
-                board.getSurface()) {
-            for (Tile tile :
-                    row) {
-                System.out.println("id: " + tile.getTileId() + ", event: " + tile.getEventName());
-            }
-        }
-    }
-
     private void incrementLevel() {
         currentLevelNo++;
-        //  currentLevel.setLevelNo(currentLevelNo);
+
     }
 
     private Tile createTiles(String inputLine) {
@@ -377,11 +339,10 @@ public class BoardMaker {
             if (areTilesConsecutive(board.getPressedTile(), board.getReleasedTile())) {
                 System.out.println("released x: " + e.getSceneX() + ", y: " + e.getSceneY());
                 swapTiles(board.getPressedTile(), board.getReleasedTile());
-                FinishChecker finishChecker = new FinishChecker(board);
-                System.out.println(finishChecker.getSolutionPath());
+
 
                 numberOfMovements++;
-                button.setText(""+numberOfMovements);
+                button.setText("NUMBER OF MOVES " + numberOfMovements);
 
                 board.refresh();
                 // board.setTilesToPane()
@@ -395,9 +356,9 @@ public class BoardMaker {
     private void clearOnMouseSwipeEvents() {
         Tile[][] boardSurface = board.getSurface();
         Tile tile;
-        for (int i = 0; i < boardSurface.length; i++) {
-            for (int j = 0; j < boardSurface[i].length; j++) {
-                tile = boardSurface[i][j];
+        for (Tile[] tiles : boardSurface) {
+            for (Tile value : tiles) {
+                tile = value;
                 if (tile.getOnMousePressed() != null)
                     tile.removeEventHandler(MouseEvent.MOUSE_PRESSED, tile.getOnMousePressed());
                 if (tile.getOnMousePressed() != null)
@@ -439,7 +400,7 @@ public class BoardMaker {
         Tile[][] surface = board.getSurface();
         surface[row][firstTileCol] = secondTile;
         surface[row][secondTileCol] = firstTile;
-    } // second 3108 pipe01, first 3703 emptyfree
+    }
 
     private void swapTilesVertically(Tile firstTile, Tile secondTile) {
         int firstTileRow = board.getTileRow(firstTile);
@@ -472,4 +433,43 @@ public class BoardMaker {
     }
 
 
+    public Board getBoard() {
+        return board;
+    }
+
+    public void setBoard(Board board) {
+        this.board = board;
+    }
+
+    public FileReader getFileReader() {
+        return fileReader;
+    }
+
+    public void setFileReader(FileReader fileReader) {
+        this.fileReader = fileReader;
+    }
+
+    public int getCurrentLevelNo() {
+        return currentLevelNo;
+    }
+
+    public void setCurrentLevelNo(int currentLevelNo) {
+        this.currentLevelNo = currentLevelNo;
+    }
+
+    public int getNumberOfMovements() {
+        return numberOfMovements;
+    }
+
+    public void setNumberOfMovements(int numberOfMovements) {
+        this.numberOfMovements = numberOfMovements;
+    }
+
+    public Button getButton() {
+        return button;
+    }
+
+    public void setButton(Button button) {
+        this.button = button;
+    }
 }

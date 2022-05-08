@@ -1,8 +1,12 @@
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.layout.GridPane;
+import javafx.scene.shape.Path;
 
-public class Board extends Node {
+import java.util.ArrayList;
+
+public class Board  {
+    int currentBoard;
     private GridPane pane;
     private Tile[][] surface;
     private Tile pressedTile;
@@ -11,6 +15,7 @@ public class Board extends Node {
     public Board() {
         pane = new GridPane();
         surface = new Tile[4][4];
+        currentBoard++;
     }
 
     public Tile[][] getSurface() {
@@ -49,10 +54,10 @@ public class Board extends Node {
     }
 
     private int getNextAvailableCol() {
-        for (int i = 0; i < surface.length; i++) {
+        for (Tile[] tiles : surface) {
             for (int j = 0; j < surface[0].length; j++) {
-               // System.out.println("row "+i+" col :"+ j+surface[i][j]);
-                if (surface[i][j] == null)
+                // System.out.println("row "+i+" col :"+ j+surface[i][j]);
+                if (tiles[j] == null)
                     return j;
             }
         }
@@ -101,10 +106,7 @@ public class Board extends Node {
     }
 
 
-    @Override
-    public Node getStyleableNode() {
-        return super.getStyleableNode();
-    }
+
 
     public int getStarterRow() {
         Tile starter = getStarterTile();
@@ -137,4 +139,15 @@ public class Board extends Node {
     }
 
 
+    public ArrayList<Integer> getIndex(ArrayList<Tile> path) {
+        int index;
+        ArrayList<Integer> indexList = new ArrayList<>();
+        for (Tile tile : path) {
+            index = 4 * getTileRow(tile) + getTileCol(tile);
+            indexList.add(index);
+        }
+        return indexList;
+
+    }
 }
+
