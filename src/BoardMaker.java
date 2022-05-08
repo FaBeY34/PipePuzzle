@@ -1,3 +1,4 @@
+import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -6,12 +7,15 @@ import java.io.File;
 import java.io.FileNotFoundException;
 
 public class BoardMaker {
+
+
     public BoardMaker(FileReader fileReader) {
 
         this.fileReader = fileReader;
     }
 
     public BoardMaker() {
+        button = new Button(""+numberOfMovements);
         fileReader = new FileReader();
     }
 
@@ -24,6 +28,11 @@ public class BoardMaker {
     }
 
     private Board board;
+
+    public FileReader getFileReader() {
+        return fileReader;
+    }
+
     private FileReader fileReader;
 
     public int getCurrentLevelNo() {
@@ -35,9 +44,13 @@ public class BoardMaker {
     }
 
     private int currentLevelNo;
+    public int numberOfMovements = 0;
+
+    Button button ;
 
     public BoardMaker(Board board) {
         this.board = board;
+
         this.fileReader = new FileReader();
         initializeLevel();
     }
@@ -359,16 +372,22 @@ public class BoardMaker {
         tile.setOnMouseReleased(e -> {
             Tile releasedTile = getReleasedTile(e.getSceneX(), e.getSceneY());
             board.setReleasedTile(releasedTile);
+
             // x, y değerler için null check yapmayı unutmayın
             if (areTilesConsecutive(board.getPressedTile(), board.getReleasedTile())) {
                 System.out.println("released x: " + e.getSceneX() + ", y: " + e.getSceneY());
                 swapTiles(board.getPressedTile(), board.getReleasedTile());
                 FinishChecker finishChecker = new FinishChecker(board);
                 System.out.println(finishChecker.getSolutionPath());
+
+                numberOfMovements++;
+                button.setText(""+numberOfMovements);
+
                 board.refresh();
                 // board.setTilesToPane()
                 clearOnMouseSwipeEvents();
                 setOnMouseSwipeEvents();
+                System.out.println("Number of movements : " + numberOfMovements);
             }
         });
     }

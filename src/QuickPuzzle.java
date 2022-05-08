@@ -8,6 +8,7 @@ import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
+import javafx.scene.shape.Box;
 import javafx.stage.Stage;
 
 import java.io.FileNotFoundException;
@@ -20,6 +21,8 @@ public class QuickPuzzle extends Application {
     Button previousBt = new Button("PREVIOUS LEVEL");
     Button playButton = new Button("", new ImageView(new Image("images/img.png", 200, 200, true, true)));
 
+   //numberofmovements button
+    Button button = new Button("NumberOfMovements " + boardMaker.numberOfMovements);
     public QuickPuzzle() {
 
     }
@@ -30,6 +33,10 @@ public class QuickPuzzle extends Application {
         Board board = new Board();
         boardMaker.setBoard(board);
         //BorderPane borderPane = new BorderPane();
+
+
+
+
 
         startIntroPanel(primaryStage);
         createfirstLevel(primaryStage);
@@ -53,14 +60,23 @@ public class QuickPuzzle extends Application {
 
         nextLevelBt.setOnMouseClicked(event1 -> {
             if (finishChecker.isGameFinished()) {
+                boardMaker.numberOfMovements = 0;
 
                 freshBoard();
 
                 System.out.println(boardMaker.getBoard());
                 createnextBoard();
-                shownextLevel(primaryStage);
-                finishChecker.setBoard(boardMaker.getBoard());
-                System.out.println(boardMaker.getBoard());
+
+                if(!boardMaker.getFileReader().hasNextLine()){
+                    shownextLevel(primaryStage);
+                    finishChecker.setBoard(boardMaker.getBoard());
+                    System.out.println(boardMaker.getBoard());
+                }
+                else{
+                    primaryStage.close();
+                }
+
+
 
             }
         });
@@ -89,6 +105,9 @@ public class QuickPuzzle extends Application {
 
     }
 
+
+
+
     private void OpenFirstLevel(Stage primaryStage) {
         BorderPane borderPane = new BorderPane();
         Button mainMenu = new Button("RETURN TO MAIN MENU");
@@ -97,10 +116,15 @@ public class QuickPuzzle extends Application {
         //pane.getChildren().add(level1);
         //pane.getChildren().add(mainMenu);
         //pane.getChildren().add(nextLevelBt);
+
+        button.setText("NumberOfMovements : " + boardMaker.numberOfMovements);
+
         borderPane.setLeft(level1);
         VBox vBox = new VBox();
         vBox.getChildren().add(0, mainMenu);
-        vBox.getChildren().add(1, nextLevelBt);
+        //numberofmovements
+        vBox.getChildren().add(1,boardMaker.button);
+        vBox.getChildren().add(2, nextLevelBt);
         vBox.setSpacing(200);
         borderPane.setRight(vBox);
         vBox.setPadding(new Insets(20, 30, 20, 20));
@@ -132,25 +156,31 @@ public class QuickPuzzle extends Application {
     }
 
     private void shownextLevel(Stage primaryStage) {
+
+
         BorderPane borderPane = new BorderPane();
         GridPane currentGameBoard = boardMaker.getBoard().getPane();
+        // tamamlanacak
+
         borderPane.setLeft(currentGameBoard);
         VBox vBox = new VBox();
      //   vBox.getChildren().add(0, previousBt);
         vBox.getChildren().add(0, nextLevelBt);
+        boardMaker.button.setText("0");
+        vBox.getChildren().add(1,boardMaker.button);
         vBox.setSpacing(200);
         borderPane.setRight(vBox);
         vBox.setPadding(new Insets(20, 30, 20, 20));
         Scene scene = new Scene(borderPane);
         primaryStage.setScene(scene);
         primaryStage.show();
-          previousBt.setOnMouseClicked(event -> {
+        /*previousBt.setOnMouseClicked(event -> {
               try {
                   openPreviousLevel(primaryStage);
               } catch (FileNotFoundException e) {
                   e.printStackTrace();
               }
-          });
+          });*/
 
     }
 

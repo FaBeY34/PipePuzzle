@@ -41,17 +41,17 @@ public class Board extends Node {
     public void placeTileAndAppendToPane(Tile tile) {
         int row = getNextAvailableRow();
         int col = getNextAvailableCol();
-        System.out.println("row: " + row + "col. " + col);
-        System.out.println(surface[row][col]);
+        //System.out.println("row: " + row + "col. " + col);
+        //System.out.println(surface[row][col]);
         surface[row][col] = tile;
-        System.out.println(surface[row][col]);
+        //System.out.println(surface[row][col]);
         pane.add(tile, col, row);
     }
 
     private int getNextAvailableCol() {
         for (int i = 0; i < surface.length; i++) {
             for (int j = 0; j < surface[0].length; j++) {
-                System.out.println("row "+i+" col :"+ j+surface[i][j]);
+               // System.out.println("row "+i+" col :"+ j+surface[i][j]);
                 if (surface[i][j] == null)
                     return j;
             }
