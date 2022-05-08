@@ -45,9 +45,9 @@ import java.io.FileNotFoundException;
                 }
                 if (finishChecker.isGameFinished()) {
 
-                    PipeDrawer pD = new PipeDrawer(finishChecker.getPath());
-                    pD.startAnimation();
-                    primaryStage.setScene(pD.getScene());
+                 //   PipeDrawer pD = new PipeDrawer(finishChecker.getPath());
+                   // pD.startAnimation();
+                    //primaryStage.setScene(pD.getScene());
 
                     nextLevelBt.setOnMouseClicked(event1 -> {
                         freshBoard();
@@ -130,9 +130,13 @@ import java.io.FileNotFoundException;
         private void shownextLevel(Stage primaryStage) {
             BorderPane borderPane = new BorderPane();
             GridPane currentGameBoard = boardMaker.getBoard().getPane();
-            borderPane.setCenter(currentGameBoard);
-            borderPane.setRight(nextLevelBt);
-            borderPane.setLeft(previousBt);
+            borderPane.setLeft(currentGameBoard);
+            VBox vBox = new VBox();
+            vBox.getChildren().add(0, previousBt);
+            vBox.getChildren().add(1, nextLevelBt);
+            vBox.setSpacing(200);
+            borderPane.setRight(vBox);
+            vBox.setPadding(new Insets(20, 30, 20, 20));
             Scene scene = new Scene(borderPane);
             primaryStage.setScene(scene);
             primaryStage.show();
