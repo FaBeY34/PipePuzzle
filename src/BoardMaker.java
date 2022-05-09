@@ -38,7 +38,7 @@ public class BoardMaker {
         incrementLevel();
         Tile newTile;
 
-        fileReader.setFileAndScanner(new File(getPathcurrentLevel()));
+        fileReader.setFileAndScanner(new File(getLevelPath()));
         while (fileReader.hasNextLine()) {
             newTile = createTiles(fileReader.getNextLine());
             addımages(newTile);
@@ -48,8 +48,8 @@ public class BoardMaker {
     }
 
 
-    private String getPathcurrentLevel() {
-        return "src/level" + currentLevelNo + ".txt";
+    private String getLevelPath() {
+        return "level" + currentLevelNo + ".txt";
     }
 
     private void incrementLevel() {

@@ -189,7 +189,7 @@ public class FinishChecker {
         }
         if (isUpDirectionAvailable(board.getStarterTile())) {
             Tile nextTile = board.getTile(board.getTileRow(board.getStarterTile()) - 1, board.getTileCol(board.getStarterTile()));
-            while (!(nextTile instanceof End)) {
+            while (!(nextTile.getType().equals("End"))) {
                 nextTile = getNextTile(nextTile);
                 if (nextTile == null)
                     break;
