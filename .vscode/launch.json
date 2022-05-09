@@ -1,0 +1,16 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Launch QuickPuzzle",
+            "request": "launch",
+            "mainClass": "QuickPuzzle",
+            "projectName": "PipePuzzle_1e2955ba",
+            "vmArgs": "--module-path \"C:/Program Files/Java/javafx-sdk-18/lib\" --add-modules=javafx.controls"
+        }
+    ]
+}

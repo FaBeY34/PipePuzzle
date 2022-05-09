@@ -170,7 +170,6 @@ public class QuickPuzzle extends Application {
             primaryStage.setScene(scene);
             primaryStage.show();
 
-
         }
 
     }
@@ -199,7 +198,9 @@ public class QuickPuzzle extends Application {
         }
     }
 
-
+    public static void main(String[] args) {
+        launch(args);
+    }
 }
 
 
