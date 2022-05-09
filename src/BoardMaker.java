@@ -7,13 +7,17 @@ import java.io.File;
 import java.io.FileNotFoundException;
 
 public class BoardMaker {
+    // BoardMaker class will provide us to fill the board with given tiles and set the event action of tiles.So it needs board itself, a fileReader to read the required tiles
+    //  level no to create next board and a button and number of moves  to record the tile movements in every changing
+
+    //Variables
     private Board board;
     private FileReader fileReader;
     private int currentLevelNo;
     public int numberOfMovements = 0;
     Button button;
 
-
+    // Constructors
     public BoardMaker() {
         button = new Button("NUMBER OF MOVES " + numberOfMovements);
         fileReader = new FileReader();
@@ -27,11 +31,13 @@ public class BoardMaker {
         initializeLevel();
     }
 
-
+    // After creating a boardmaker, we initialize the level as 0.
     private void initializeLevel() {
         currentLevelNo = 0;
 
     }
+
+    // this method will arrange tiles to our board according to input files and start events for tiles which are movable.
 
     public void createBoard() throws FileNotFoundException {
 
@@ -47,15 +53,18 @@ public class BoardMaker {
         setOnMouseSwipeEvents();
     }
 
-
+    // this will bring us the current path of level file
     private String getLevelPath() {
-        return "level" + currentLevelNo + ".txt";
+        return "src/level" + currentLevelNo + ".txt";
     }
+
+    // after every board creation we will increment the level.
 
     private void incrementLevel() {
         currentLevelNo++;
 
     }
+    // this method will create tiles based on input files.
 
     private Tile createTiles(String inputLine) {
         String[] linesplit = inputLine.split(",");
@@ -65,6 +74,7 @@ public class BoardMaker {
         return new Tile(id, type, property);
     }
 
+    // this method will add images to tile based on its property.
 
     private void addımages(Tile newTile) {
         String type = newTile.getType();
@@ -119,6 +129,7 @@ public class BoardMaker {
         }
     }
 
+    // this method will generate tiles events after board is arranged.
     public void setOnMouseSwipeEvents() {
         Tile[][] boardSurface = board.getSurface();
         Tile tile;
@@ -131,6 +142,9 @@ public class BoardMaker {
         }
     }
 
+    // to indicate the events its important where each tile is positioned in board. Thats why we made a 9 group according to their positions
+    // for example if row and column 00 we can only go to down or right or for case 01 we can go to left right or down and so on
+    // group 1 > 00(down-right)    group 2 > 03(down-left)    group 3 > 30(right-up)   group 4 > 33(left-up)      group 5 > 01-02(left-right)    group 6 > 10-20(right-up-down)  group 7 >31-32(left-up-down)  group 8 >31-32(left--right-up) group 9> remain positions(left-right-down-up)
     public void setOnSwipeEvent(Tile tile) {
         int group = getGroup(tile);
         switch (group) {
@@ -164,6 +178,7 @@ public class BoardMaker {
 
         }
     }
+    // The setEventsForGroup 1 up to 9 will assign the events of tiles based on the logic mentioned in setOnSwipeEvent method.
 
     private void setEventsForGroup9(Tile tile) {
         setOnMouseSwipeLeftEvent(tile);
@@ -216,6 +231,7 @@ public class BoardMaker {
         setOnMouseSwipeRightEvent(tile);
     }
 
+    // this logic was explained above.
     private int getGroup(Tile tile) {
         int row = board.getTileRow(tile);
         int col = board.getTileCol(tile);
@@ -258,6 +274,7 @@ public class BoardMaker {
         return group;
     }
 
+    // to assign the left event for the appropriate tile, we need to check the left and itself is valid for swipe or not first. If it is we need to assign the pressed and released actions to it.
     private void setOnMouseSwipeLeftEvent(Tile tile) {
         int row = board.getTileRow(tile);
         int col = board.getTileCol(tile);
@@ -267,6 +284,7 @@ public class BoardMaker {
             setOnMouseReleasedEvent(tile);
         }
     }
+    // to assign the right event for the appropriate tile, we need to check the right and itself is valid for swipe or not first. If it is we need to assign the pressed and released actions to it.
 
     private void setOnMouseSwipeRightEvent(Tile tile) {
         int row = board.getTileRow(tile);
@@ -278,6 +296,7 @@ public class BoardMaker {
             setOnMouseReleasedEvent(tile);
         }
     }
+    // to assign the up event for the appropriate tile, we need to check the up and itself is valid for swipe or not first. If it is we need to assign the pressed and released actions to it.
 
     private void setOnMouseSwipeUpEvent(Tile tile) {
         int row = board.getTileRow(tile);
@@ -290,6 +309,7 @@ public class BoardMaker {
         }
     }
 
+    // to assign the down event for the appropriate tile, we need to check the down and itself is valid for swipe or not first. If it is, we need to assign the pressed and released actions to it.
     private void setOnMouseSwipeDownEvent(Tile tile) {
         int row = board.getTileRow(tile);
         int col = board.getTileCol(tile);
@@ -301,12 +321,13 @@ public class BoardMaker {
         }
     }
 
+    // when pressedtile and released tile position are proper for arrangement, we need to set board first and also record the movements.
     private void setOnMouseReleasedEvent(Tile tile) {
         tile.setOnMouseReleased(e -> {
             Tile releasedTile = getReleasedTile(e.getSceneX(), e.getSceneY());
             board.setReleasedTile(releasedTile);
 
-            // x, y değerler için null check yapmayı unutmayın
+            // this method checks whether pressedTile and releasedTile are proper for changing(whether they are sideways or top of each other)
             if (areTilesConsecutive(board.getPressedTile(), board.getReleasedTile())) {
                 System.out.println("released x: " + e.getSceneX() + ", y: " + e.getSceneY());
                 swapTiles(board.getPressedTile(), board.getReleasedTile());
@@ -314,9 +335,9 @@ public class BoardMaker {
 
                 numberOfMovements++;
                 button.setText("NUMBER OF MOVES " + numberOfMovements);
-
+                // after swap operation completes,we will  refresh the pane to add the current tiles to it
                 board.refresh();
-                // board.setTilesToPane()
+                // after every swapping we also need to remove events and reassign the events.
                 clearOnMouseSwipeEvents();
                 setOnMouseSwipeEvents();
                 System.out.println("Number of movements : " + numberOfMovements);
@@ -324,6 +345,7 @@ public class BoardMaker {
         });
     }
 
+    // this method will remove the all events of tiles after every swapping.
     private void clearOnMouseSwipeEvents() {
         Tile[][] boardSurface = board.getSurface();
         Tile tile;
@@ -338,6 +360,7 @@ public class BoardMaker {
         }
     }
 
+    // this method will bring the tile in position where mouse is released.
     private Tile getReleasedTile(double x, double y) {
         int col = (int) (x / 150);
         int row = (int) (y / 150);
@@ -348,6 +371,7 @@ public class BoardMaker {
         return null;
     }
 
+    // this is only for checking whether event is working correctly or not.
     private void setOnMousePressedEvent(Tile tile) {
         tile.setOnMousePressed(e -> {
             System.out.println("pressed x: " + e.getSceneX() + ", y: " + e.getSceneY());
@@ -355,6 +379,7 @@ public class BoardMaker {
         });
     }
 
+    // this will swap pressed and released tile if they are proper for swapping.
     private void swapTiles(Tile pressedTile, Tile releasedTile) {
         if (isSwipeValid(pressedTile, releasedTile)) {
             if (areTilesOnTopOfEachOther(pressedTile, releasedTile))
@@ -364,6 +389,7 @@ public class BoardMaker {
         }
     }
 
+    // if tiles side by side, the columns of tiles will be replaced.
     private void swapTilesHorizontally(Tile firstTile, Tile secondTile) {
         int row = board.getTileRow(firstTile);
         int firstTileCol = board.getTileCol(firstTile);
@@ -373,6 +399,7 @@ public class BoardMaker {
         surface[row][secondTileCol] = firstTile;
     }
 
+    // if tiles areTilesOnTopOfEachOther , the rows of tiles will be replaced.
     private void swapTilesVertically(Tile firstTile, Tile secondTile) {
         int firstTileRow = board.getTileRow(firstTile);
         int secondTileRow = board.getTileRow(secondTile);
@@ -382,28 +409,33 @@ public class BoardMaker {
         surface[secondTileRow][col] = firstTile;
     }
 
+    // this will check if tiles side by side or top of each other.
     private boolean areTilesConsecutive(Tile pressedTile, Tile releasedTile) {
         return areTilesOnTopOfEachOther(pressedTile, releasedTile)
                 || areTilesSideBySide(pressedTile, releasedTile);
 
     }
 
-
+    // side by side means the difference between their column values is 1, and they are in the same row.
     private boolean areTilesSideBySide(Tile pressedTile, Tile releasedTile) {
         return Math.abs(board.getTileCol(pressedTile) - board.getTileCol(releasedTile)) == 1
                 && Math.abs(board.getTileRow(pressedTile) - board.getTileRow(releasedTile)) == 0;
     }
 
+    // areTilesOnTopOfEachOther means the difference between their row values is 1, and they are in the same column.
     private boolean areTilesOnTopOfEachOther(Tile pressedTile, Tile releasedTile) {
         return Math.abs(board.getTileRow(pressedTile) - board.getTileRow(releasedTile)) == 1
                 && Math.abs(board.getTileCol(pressedTile) - board.getTileCol(releasedTile)) == 0;
     }
 
+    // for swapping, the tiles cannot be starter end and pipe-static. If the first tile is empty-free and the other is a movableTile swap is valid or tile1 is movable
+    // and tile 2 is EmptyFree the condition will be satisfied for swapping.
     private boolean isSwipeValid(Tile tile1, Tile tile2) {
         return tile1.isEmptyFreeTile() && tile2.isMovable() || tile1.isMovable() && tile2.isEmptyFreeTile();
     }
 
 
+    // Getter and Setter methods.
     public Board getBoard() {
         return board;
     }

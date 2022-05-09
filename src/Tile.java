@@ -2,12 +2,16 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
 
 public class Tile extends StackPane {
+    // Every Tile has a tileId, a type, a property  and event function.
+
+    //Variables
     private int tileId;
     private String type;
     private String property;
-    private ImageView imageView;
+
     private String eventName;
 
+    //  Constructors
     public Tile() {
 
     }
@@ -18,20 +22,34 @@ public class Tile extends StackPane {
         this.property = property;
     }
 
-    public String getEventName() {
-        return eventName;
+
+
+    // isMovable checks whether tile is able to move or not.
+    public boolean isMovable() {
+        return !(UnmovableTiles.getUnmovableTiles().contains(type)) && ! (this.type.equals("Empty") && this.property.equals("Free"));
+
     }
 
-    public void setEventName(String eventName) {
-        this.eventName = eventName;
+    // Checks if tile is EmptyFree or not.
+    public boolean isEmptyFreeTile() {
+
+        return type.equals("Empty") && property.equals("Free");
     }
+
+    // toString Method
+    @Override
+    public String toString() {
+        return "type= " + type + "" + property;
+
+    }
+    // Getter and Setter Methods
 
     public int getTileId() {
         return tileId;
     }
 
-    public void setId(int id) {
-        this.tileId = id;
+    public void setTileId(int tileId) {
+        this.tileId = tileId;
     }
 
     public String getType() {
@@ -50,23 +68,11 @@ public class Tile extends StackPane {
         this.property = property;
     }
 
-
-
-    public boolean isMovable() {
-        return !(UnmovableTiles.getUnmovableTiles().contains(type)) && ! (this.type.equals("Empty") && this.property.equals("Free"));
-
+    public String getEventName() {
+        return eventName;
     }
 
-    public boolean isEmptyFreeTile() {
-
-        return type.equals("Empty") && property.equals("Free");
+    public void setEventName(String eventName) {
+        this.eventName = eventName;
     }
-
-    @Override
-    public String toString() {
-        return "type= " + type + "" + property;
-
-    }
-
-
 }

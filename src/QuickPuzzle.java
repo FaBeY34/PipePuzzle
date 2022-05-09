@@ -19,10 +19,10 @@ import javafx.util.Duration;
 
 import java.io.FileNotFoundException;
 
-
+// this class will enable us tp create puzzle game.
 public class QuickPuzzle extends Application {
 
-
+    // the variables which will be used to create every level.
     BoardMaker boardMaker = new BoardMaker();
     Button nextLevelBt = new Button("", new ImageView(new Image("images/NextButton.PNG", 100, 100, true, true)));
     Button playButton = new Button("", new ImageView(new Image("images/img.png", 200, 200, true, true)));
@@ -33,34 +33,33 @@ public class QuickPuzzle extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        // Board board = new Board();
-        //   boardMaker.setBoard(board);
+        // opening first screen
         startIntroPanel(primaryStage);
-        createfirstLevel(primaryStage);
+
+        // creating first board of level
+        createFirstBoard(primaryStage);
+
+        // whenever play button is clicked, it will start the first level
         playButton.setOnMouseClicked(event -> OpenFirstLevel(primaryStage));
         //OpenFirstLevel(primaryStage);
-        System.out.println(boardMaker.getBoard());
+
+        // setting our finish checker with the first level of board.
         finishChecker = new FinishChecker(boardMaker.getBoard());
+
+        // whenever next button is clicked, we start number of movements with 0, fresh the board to take the next board, showing the level and creating
+        // the next of level board. Setting our finish-checker to control current board
         nextLevelBt.setOnMouseClicked(event1 -> {
             if (finishChecker.isGameFinished()) {
                 boardMaker.numberOfMovements = 0;
-                //  startAnimation(scene,primaryStage);
-                //PipeDrawer pD = new PipeDrawer(finishChecker.getPath());
-                //pD.startAnimation();
-                //startAnimation(scene,primaryStage);
                 freshBoard();
-                shownextLevel(primaryStage);
-                createnextBoard();
+                showNextLevel(primaryStage);
+                createNextBoard();
                 finishChecker.setBoard(boardMaker.getBoard());
 
-
             }
-
         });
-
-
     }
-
+    // we couldn't implement this part
     private void startAnimation(Scene scene, Stage primaryStage) {
         GridPane pane = boardMaker.getBoard().getPane();
         Circle circle = new Circle(10, Color.RED);
@@ -83,23 +82,15 @@ public class QuickPuzzle extends Application {
     }
 
 
-    private void refresh() {
-        boardMaker = new BoardMaker(new Board());
-        try {
-            boardMaker.createBoard();
-        } catch (FileNotFoundException e) {
-            System.out.println("File couldnt found while refreshing");
-        }
-    }
-
-
+    // set the board-maker with a new board.
     private void freshBoard() {
         boardMaker.setBoard(new Board());
         // System.out.println(Arrays.deepToString(boardMaker.getBoard().getSurface()));
 
     }
 
-
+    // opens the first level screen. We create a Vbox and adding the nodes of level1(the board and buttons) and show it in the stage.Whenever main button is clicked
+    // it will return to intro panel.
     private void OpenFirstLevel(Stage primaryStage) {
         BorderPane borderPane = new BorderPane();
 
@@ -128,10 +119,9 @@ public class QuickPuzzle extends Application {
 
     }
 
-    private void clearBoard() {
-        boardMaker.setBoard(null);
-    }
 
+
+    // it will generate the login screen
     private void startIntroPanel(Stage primaryStage) {
 
         VBox starterMenu = new VBox();
@@ -149,14 +139,11 @@ public class QuickPuzzle extends Application {
 
     }
 
-    private void reset() throws FileNotFoundException {
-        boardMaker.setBoard(null);
-        freshBoard();
 
 
-    }
-
-    private void shownextLevel(Stage primaryStage) {
+    // this method will open the next level based on current board. However, after the last level we need to finish the game
+    // that's why we are creating a text includes you win. Whenever next button is clicked of last level, it will show up.
+    private void showNextLevel(Stage primaryStage) {
         System.out.println(boardMaker);
         if (boardMaker.getCurrentLevelNo() < 6) {
             BorderPane borderPane = new BorderPane();
@@ -174,7 +161,7 @@ public class QuickPuzzle extends Application {
             primaryStage.show();
         } else {
             VBox vBox = new VBox();
-           // vBox.setMaxSize(100,5);
+            // vBox.setMaxSize(100,5);
             Text text = new Text(" YOU WİN");
             text.setFont(Font.font(100));
             text.setTextAlignment(TextAlignment.CENTER);
@@ -188,8 +175,8 @@ public class QuickPuzzle extends Application {
 
     }
 
-
-    private void createnextBoard() {
+    // Creating the board of  next level.
+    private void createNextBoard() {
         try {
             boardMaker.createBoard();
         } catch (FileNotFoundException e) {
@@ -197,8 +184,10 @@ public class QuickPuzzle extends Application {
         }
     }
 
-    private void createfirstLevel(Stage primaryStage) {
-        // playButton.setOnMouseClicked(event -> {
+    // creating the board of first level.
+
+    private void createFirstBoard(Stage primaryStage) {
+
         try {
             Board board = new Board();
             boardMaker.setBoard(board);
@@ -210,7 +199,7 @@ public class QuickPuzzle extends Application {
         }
     }
 
-    ;
+
 }
 
 
