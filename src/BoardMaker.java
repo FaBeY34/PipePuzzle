@@ -62,37 +62,7 @@ public class BoardMaker {
         int id = Integer.parseInt(linesplit[0]);
         String type = linesplit[1];
         String property = linesplit[2];
-        switch (type) {
-            case "Starter":
-                return new Starter(id, type, property);
-
-            case "End":
-                return new End(id, type, property);
-
-            case "Empty":
-                if (property.equals("none")) {
-                    return new Pipe(id, type, property);
-                } else
-                    return new Empty(id, type, property);
-
-
-            case "PipeStatic": {
-                if (property.equals("Vertical") || property.equals("Horizontal"))
-                    return new PipeStatic(id, type, property);
-                else {
-                    return new CurvedPipeStatic(id, type, property);
-                }
-            }
-            case "Pipe": {
-                if (property.equals("none"))
-                    return new Pipe(id, type, property);
-                else
-                    return new CurvedPipe(id, type, property);
-            }
-
-
-        }
-        return null;
+        return new Tile(id, type, property);
     }
 
 

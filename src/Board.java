@@ -121,7 +121,7 @@ public class Board  {
     public Tile getStarterTile() {
         for (Tile[] row : surface) {
             for (Tile tile : row) {
-                if (tile instanceof Starter) {
+                if (tile.getType().equals("Starter")) {
                     return tile;
                 }
             }
