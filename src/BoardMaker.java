@@ -17,11 +17,12 @@ public class BoardMaker {
     public BoardMaker() {
         button = new Button("NUMBER OF MOVES " + numberOfMovements);
         fileReader = new FileReader();
+        initializeLevel();
     }
 
     public BoardMaker(Board board) {
         this.board = board;
-
+        button = new Button("NUMBER OF MOVES " + numberOfMovements);
         this.fileReader = new FileReader();
         initializeLevel();
     }
